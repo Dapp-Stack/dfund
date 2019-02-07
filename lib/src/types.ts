@@ -11,10 +11,13 @@ export interface Tracker {
 
 export interface Fund {
   address?: string;
-  title: string;
-  description: string;
-  expireOn: Date;
-  signers: string[];
+  name: string;
+  symbol: string;
+  tokens: {
+    [address: string]: number;
+  };
+  supply: number;
+  democracy: string;
 }
 
 export interface Contracts {
