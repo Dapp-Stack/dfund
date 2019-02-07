@@ -17,7 +17,8 @@
               <td>{{ props.item.address }}</td>
               <td>{{ props.item.name }}</td>
               <td>{{ props.item.symbol }}</td>
-              <td>{{ Object.keys(props.item.tokens).map((address) => `${address} - ${props.item.tokens[address]}%`) }}</td>
+              <td>{{ props.item.supply }}</td>
+              <td>{{ Object.keys(props.item.tokens).map((address) => `${address} - ${props.item.tokens[address]}%`).join(" / ") }}</td>
             </router-link>
           </template>
         </v-data-table>
@@ -37,6 +38,7 @@ export default class Funds extends Vue {
     { text: 'Address', value: 'address' },
     { text: 'Name', value: 'name' },
     { text: 'Symbol', value: 'symbol' },
+    { text: 'Supply', value: 'supply' },
     { text: 'Tokens', value: 'Tokens' },
   ];
 

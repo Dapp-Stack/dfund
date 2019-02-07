@@ -11,10 +11,11 @@ export const buildFund = (data: any[]): Fund => {
     address: data[0] as string,
     name: data[1] as string,
     symbol: data[2] as string,
-    supply: data[3] as number,
+    supply: data[3].toNumber() as number,
     democracy: data[4] as string,
     tokens: data[5].reduce((acc: any, address: string, index: number) => {
-      acc[address] = data[6][index];
+      acc[address] = data[6][index].toNumber();
+      return acc;
     }, {}),
   };
 };
