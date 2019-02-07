@@ -27,19 +27,13 @@
           </v-btn>
         </v-toolbar-items>
       </v-toolbar>
-      <v-stepper v-model="el" alt-labels>
+      <v-stepper v-model="step" alt-labels>
         <v-stepper-header>
           <v-divider></v-divider>
-
-          <v-stepper-step :complete="el > 1" step="1">Fund details</v-stepper-step>
-
+          <v-stepper-step :complete="step > 1" step="1">Fund details</v-stepper-step>
           <v-divider></v-divider>
-
-          <v-stepper-step :complete="el > 2" step="2">Strategy</v-stepper-step>
-
+          <v-stepper-step :complete="step > 2" step="2">Strategy</v-stepper-step>
           <v-divider></v-divider>
-
-          <!-- <v-stepper-step step="3">Democracy</v-stepper-step> -->
         </v-stepper-header>
 
         <v-stepper-items>
@@ -70,21 +64,19 @@
                 </v-layout>
               </v-container>
             </v-card-text>
-            <v-btn color="primary" @click="el = 2">Continue</v-btn>
-
-            <v-btn flat>Cancel</v-btn>
+            <v-btn color="primary" @click="step = 2">Continue</v-btn>
           </v-stepper-content>
 
           <v-stepper-content step="2">
             <v-layout row>
               <v-flex xs12 sm6 offset-sm3>
                 <v-list two-line>
-                  <template v-for="(item, index) in items">
+                  <template v-for="(item, index) in getItems()">
                     <v-subheader v-if="item.header" :key="item.header">{{ item.header }}</v-subheader>
 
                     <v-divider v-else-if="item.divider" :key="index" :inset="item.inset"></v-divider>
 
-                    <v-list-tile v-else :key="item.token_symbol" avatar @click>
+                    <v-list-tile v-else :key="item.token_symbol" avatar>
                       <v-list-tile-avatar>
                         <img :src="item.avatar">
                       </v-list-tile-avatar>
@@ -94,29 +86,19 @@
                         <v-list-tile-sub-title v-html="item.description"></v-list-tile-sub-title>
                       </v-list-tile-content>
                       <v-text-field
-                        v-model="percentage"
+                        value="0"
                         :rules="percentageRules"
                         type="number"
                         suffix="%"
-                        @onChange="tokens[token_symbol] = percentage"
+                        @change="updateToken($event, item)"
                       ></v-text-field>
                     </v-list-tile>
                   </template>
                 </v-list>
               </v-flex>
             </v-layout>
-            <v-btn color="primary" @click="el = 3">Create</v-btn>
-
-            <v-btn flat>Cancel</v-btn>
+            <v-btn @click="step = 1">Back</v-btn>
           </v-stepper-content>
-
-          <!-- <v-stepper-content step="3">
-            <v-card class="mb-5" color="grey lighten-1" height="200px"></v-card>
-
-            <v-btn color="primary" @click="el = 1">Continue</v-btn>
-
-            <v-btn flat>Cancel</v-btn>
-          </v-stepper-content>-->
         </v-stepper-items>
       </v-stepper>
     </v-form>
@@ -145,44 +127,57 @@ export default class AddFund extends Vue {
   public nameRules = [nameRequired, nameLength];
   public symbol: string = '';
   public symbolRules = [symbolRequired, symbolLength];
+  public tokens: { [address: string]: number } = {};
   public percentageRules = [percentageMaxValue];
   public loading = false;
-  public el: number = 0;
-  public tokens = {};
-  public items = [
-    { header: 'Available Tokens' },
-    {
-      avatar: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
-      token_symbol: 'AAPL',
-      description:
-        '<span class=\'text--primary\'>$3.022</span> &mdash; Apple stocks tokenApple stocks tokenApple stocks tokenApple stocks tokenApple stocks token',
-    },
-    { divider: true, inset: true },
-    {
-      avatar: 'https://cdn.vuetifyjs.com/images/lists/2.jpg',
-      token_symbol: 'DAS',
-      description:
-        '<span class=\'text--primary\'>$5.022</span> &mdash; Das tokenApple stocks tokenApple stocks tokenApple stocks tokenApple stocks token',
-    },
-    { divider: true, inset: true },
-    {
-      avatar: 'https://cdn.vuetifyjs.com/images/lists/3.jpg',
-      token_symbol: 'SNT',
-      description:
-        '<span class=\'text--primary\'>$1.022</span> &mdash; Status tokenApple stocks tokenApple stocks tokenApple stocks tokenApple stocks token',
-    },
-  ];
+  public step: number = 0;
 
   @Action('create', { namespace: 'fund' }) private createFund!: (
     fund: Fund,
   ) => void;
   @State('prices') private prices!: any;
+  @State('contracts') private contracts!: any;
+
+  public getItems() {
+    return [
+      { header: 'Available Tokens' },
+      {
+        address: this.contracts.AaplToken[0].address,
+        avatar: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
+        token_symbol: 'AAPL',
+        description:
+          '<span class=\'text--primary\'>$3.022</span> &mdash; Apple stocks tokenApple stocks tokenApple stocks tokenApple stocks tokenApple stocks token',
+      },
+      { divider: true, inset: true },
+      {
+        address: this.contracts.DasToken[0].address,
+        avatar: 'https://cdn.vuetifyjs.com/images/lists/2.jpg',
+        token_symbol: 'DAS',
+        description:
+          '<span class=\'text--primary\'>$5.022</span> &mdash; Das tokenApple stocks tokenApple stocks tokenApple stocks tokenApple stocks token',
+      },
+      { divider: true, inset: true },
+      {
+        address: this.contracts.SntToken[0].address,
+        avatar: 'https://cdn.vuetifyjs.com/images/lists/3.jpg',
+        token_symbol: 'SNT',
+        description:
+          '<span class=\'text--primary\'>$1.022</span> &mdash; Status tokenApple stocks tokenApple stocks tokenApple stocks tokenApple stocks token',
+      },
+    ];
+  }
+
+  public updateToken(value, item) {
+    this.tokens[item.address] = value;
+  }
 
   public async create() {
     const fund = {
       name: this.name,
       symbol: this.symbol,
+      tokens: this.tokens
     };
+    await this.createFund(fund);
   }
 }
 </script>
