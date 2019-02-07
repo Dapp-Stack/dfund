@@ -1,34 +1,32 @@
 <template>
   <div>
-    <v-snackbar v-model="addPetitionSnackbar" bottom multi-line>
-      Petition Created
-      <v-btn color="pink" flat @click="addPetitionSnackbar = false">
+    <v-snackbar v-model="addFundSnackbar" bottom multi-line>
+      Fund Created
+      <v-btn color="pink" flat @click="addFundSnackbar = false">
         Close
       </v-btn>
     </v-snackbar>
     <v-toolbar app>
       <v-toolbar-title class="headline text-uppercase">
-        <span>DPetition</span>
-        <span>|</span>
-        <span class="font-weight-light">Sign Petition that Matters</span>
+        <span>DFund</span>
       </v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn flat to="/">
-        <v-icon class="mr-2">fa-pencil</v-icon>
-        <span>List Petitions</span>
+        <v-icon class="mr-2">fa-archive</v-icon>
+        <span>List Funds</span>
       </v-btn>
       <v-dialog
         v-if="address"
-        v-model="addPetitionDialog"
+        v-model="addFundDialog"
         fullscreen
         hide-overlay
         transition="dialog-bottom-transition"
       >
         <v-btn slot="activator" color="primary">
           <v-icon class="mr-2">fa-plus</v-icon>
-          <span>Add Petition</span>
+          <span>Add Fund</span>
         </v-btn>
-        <AddPetition @close="addPetitionDialog=false" @showSuccess="addPetitionSnackbar=true"/>
+        <AddFund @close="addFundDialog=false" @showSuccess="addFundSnackbar=true"/>
       </v-dialog>
       <v-menu v-if="address" :close-on-content-click="false" :nudge-bottom="50" bottom>
         <v-btn slot="activator" fab small color="indigo" dark>
@@ -73,7 +71,7 @@
             <v-spacer></v-spacer>
             <v-btn color="success" flat to="/wallet">
               <v-icon class="mr-2">fa-money</v-icon>
-              Buy PPT Token
+              Buy DAS Token
             </v-btn>
             <v-btn color="error" flat @click="logout">
               <v-icon class="mr-2">fa-sign-out</v-icon>
@@ -94,16 +92,16 @@
 import Vue from 'vue';
 import { Component, Prop } from 'vue-property-decorator';
 import { Action, State } from 'vuex-class';
-import AddPetition from './addPetition.vue';
+import AddFund from './addFund.vue';
 import Blockies from './blockies.vue';
 import { Balances } from '../types';
 
 @Component({
-  components: { AddPetition, Blockies },
+  components: { AddFund, Blockies },
 })
 export default class Header extends Vue {
-  public addPetitionDialog = false;
-  public addPetitionSnackbar = false;
+  public addFundDialog = false;
+  public addFundSnackbar = false;
 
   @Action('destroy', { namespace: 'identity' }) private destroyIdentity!: () => void;
   @State('address', { namespace: 'identity' }) private address!: string;

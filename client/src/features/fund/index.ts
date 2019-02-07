@@ -1,19 +1,19 @@
 import axios from 'axios';
 import { Module, ActionTree, MutationTree } from 'vuex';
-import { waitForTransactionReceipt, extractTransactionEvents, Petition } from '@dfund/lib';
+import { waitForTransactionReceipt, extractTransactionEvents, Fund } from '@dfund/lib';
 import { ethers } from 'ethers';
 
 import { apiUrl } from '../../config';
-import { RootState, PetitionState } from '../../types';
-import { buildPetition, buildCreateInput, buildSignInput } from '../../services/petitionService';
-import petitionJson from '../../../contracts/Petition/Petition.sol/Petition.json';
+import { RootState, FundState } from '../../types';
+import { buildFund, buildCreateInput, buildSignInput } from '../../services/fundService';
+import fundJson from '../../../contracts/Fund/Fund.sol/Fund.json';
 
-export const defaultState: PetitionState = {
+export const defaultState: FundState = {
   list: [],
 };
 
-export const actions: ActionTree<PetitionState, RootState> = {
-  async create({ commit, rootState, dispatch }, payload: Petition) {
+export const actions: ActionTree<FundState, RootState> = {
+  async create({ commit, rootState, dispatch }, payload: Fund) {
     const data = await buildCreateInput(rootState, payload);
     const response = await axios({
       url: `${apiUrl}/identity/execution`,
@@ -26,14 +26,14 @@ export const actions: ActionTree<PetitionState, RootState> = {
     }
     const receipt = await waitForTransactionReceipt(rootState.provider, transaction.hash);
     const txEvents = extractTransactionEvents(receipt, rootState.contracts.Controller[0]);
-    if (!txEvents.PetitionCreated) {
+    if (!txEvents.FundCreated) {
       return;
     }
-    const result = await buildPetition(Object.values(txEvents.PetitionCreated), [], rootState);
-    commit('addPetition', result);
+    const result = await buildFund(Object.values(txEvents.FundCreated), [], rootState);
+    commit('addFund', result);
     dispatch('identity/fetchBalances', {}, { root: true });
   },
-  async sign({ commit, rootState, dispatch }, payload: Petition) {
+  async sign({ commit, rootState, dispatch }, payload: Fund) {
     if (!payload.address) {
       return;
     }
@@ -48,12 +48,12 @@ export const actions: ActionTree<PetitionState, RootState> = {
       return;
     }
     const receipt = await waitForTransactionReceipt(rootState.provider, transaction.hash);
-    const contract = new ethers.Contract(payload.address, petitionJson.abi, rootState.provider);
+    const contract = new ethers.Contract(payload.address, fundJson.abi, rootState.provider);
     const txEvents = extractTransactionEvents(receipt, contract);
-    if (!txEvents.PetitionSigned) {
+    if (!txEvents.FundSigned) {
       return;
     }
-    commit('signPetition', {address: payload.address, signer: txEvents.PetitionSigned[0]});
+    commit('signFund', {address: payload.address, signer: txEvents.FundSigned[0]});
     dispatch('identity/fetchBalances', {}, { root: true });
   },
   async list({ commit, rootState }) {
@@ -61,39 +61,39 @@ export const actions: ActionTree<PetitionState, RootState> = {
     const addresses: string[] = await controller.getAddresses();
 
     const promises = addresses.map(async (address) => {
-      const contract = new ethers.Contract(address, petitionJson.abi, rootState.provider);
+      const contract = new ethers.Contract(address, fundJson.abi, rootState.provider);
       const data = await contract.get();
       const signers = await contract.getSigners();
-      return await buildPetition(data, signers, rootState);
+      return await buildFund(data, signers, rootState);
     });
-    const petitions: Petition[] = await Promise.all(promises);
-    commit('updatePetitions', petitions);
+    const funds: Fund[] = await Promise.all(promises);
+    commit('updateFunds', funds);
   },
 };
 
-export const mutations: MutationTree<PetitionState> = {
-  updatePetitions(state, payload: Petition[]) {
+export const mutations: MutationTree<FundState> = {
+  updateFunds(state, payload: Fund[]) {
     state.list = payload;
   },
-  addPetition(state, payload: Petition) {
+  addFund(state, payload: Fund) {
     state.list.push(payload);
   },
-  signPetition(state, payload: { address: string, signer: string}) {
-    const foundedPetition = state.list.find((p) => p.address === payload.address);
-    if (!foundedPetition) {
+  signFund(state, payload: { address: string, signer: string}) {
+    const foundedFund = state.list.find((p) => p.address === payload.address);
+    if (!foundedFund) {
       return;
     }
-    foundedPetition.signers.push(payload.signer);
+    foundedFund.signers.push(payload.signer);
   },
 };
 
 const namespaced: boolean = true;
 
-const petition: Module<PetitionState, RootState> = {
+const fund: Module<FundState, RootState> = {
   namespaced,
   state: defaultState,
   actions,
   mutations,
 };
 
-export default petition;
+export default fund;

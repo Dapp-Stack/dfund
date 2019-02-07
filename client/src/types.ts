@@ -1,12 +1,12 @@
 import { ethers } from 'ethers';
-import { Contracts, Petition } from '@dfund/lib';
+import { Contracts, Fund } from '@dfund/lib';
 
 export interface Balances {
   [currency: string]: string;
 }
 
-export interface PetitionState {
-  list: Petition[];
+export interface FundState {
+  list: Fund[];
 }
 
 export interface EnsState {
@@ -42,5 +42,5 @@ export interface RootState {
   ens: EnsState;
   identity: IdentityState;
   wallet: WalletState;
-  petition: PetitionState;
+  fund: FundState;
 }

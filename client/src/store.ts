@@ -9,7 +9,7 @@ import { Tracker, loadContracts } from '@dfund/lib';
 import Authorisation from './features/authorisation';
 import Ens, { defaultState as ensDefaultState } from './features/ens';
 import Identity, { defaultState as identityDefaultState } from './features/identity';
-import Petition, { defaultState as petitionDefaultState } from './features/petition';
+import Fund, { defaultState as fundDefaultState } from './features/fund';
 import Wallet, { defaultState as walletDefaultState } from './features/wallet';
 
 import { apiUrl, provider } from './config';
@@ -40,7 +40,7 @@ const defaultState: RootState = {
   ipfsClient: null,
   identity: identityDefaultState,
   ens: ensDefaultState,
-  petition: petitionDefaultState,
+  fund: fundDefaultState,
   wallet: walletDefaultState,
 };
 
@@ -104,7 +104,7 @@ const store: StoreOptions<RootState> = {
     ens: Ens,
     identity: Identity,
     authorisation: Authorisation,
-    petition: Petition,
+    fund: Fund,
     wallet: Wallet,
   },
   plugins: [vuexLocalStorage.plugin],

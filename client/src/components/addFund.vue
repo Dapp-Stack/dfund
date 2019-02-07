@@ -17,7 +17,7 @@
         <v-btn icon dark @click="$emit('close')">
           <v-icon>fa-close fa-2x</v-icon>
         </v-btn>
-        <v-toolbar-title>Add Petition</v-toolbar-title>
+        <v-toolbar-title>Add Fund</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-toolbar-items>
           <v-btn :disabled="!valid || loading" :loading="loading" color="success" large @click="create">
@@ -209,7 +209,7 @@ import {
   Underline,
   History,
 } from 'tiptap-extensions';
-import { Petition } from '@dfund/lib';
+import { Fund } from '@dfund/lib';
 import moment from 'moment';
 
 const tomorrow = () => moment(new Date()).add(1, 'days');
@@ -226,7 +226,7 @@ const expireOnMin = (v: string) => moment(v).isAfter(tomorrow()) || 'Expire On m
     EditorMenuBar,
   },
 })
-export default class AddPetition extends Vue {
+export default class AddFund extends Vue {
   public editor: any = null;
   public valid: boolean = false;
   public title: string = '';
@@ -236,8 +236,8 @@ export default class AddPetition extends Vue {
   public expireOnMenu: boolean = false;
   public loading = false;
 
-  @Action('create', { namespace: 'petition' }) private createPetition!: (
-    petition: Petition,
+  @Action('create', { namespace: 'fund' }) private createFund!: (
+    fund: Fund,
   ) => void;
   @State('ethUsdPrice') private ethUsdPrice!: number;
 
@@ -264,7 +264,7 @@ export default class AddPetition extends Vue {
       ],
       content: `
         <h2>
-          My New Petition
+          My New Fund
         </h2>
         <h3>
           Why
@@ -288,13 +288,13 @@ export default class AddPetition extends Vue {
 
   public async create() {
     this.loading = true;
-    const petition: Petition = {
+    const fund: Fund = {
       title: this.title,
       description: this.editor.getHTML(),
       expireOn: new Date(this.expireOn),
       signers: [],
     };
-    await this.createPetition(petition);
+    await this.createFund(fund);
     this.loading = false;
     this.$emit('close');
     this.$emit('showSuccess');

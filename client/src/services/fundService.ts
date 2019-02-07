@@ -1,15 +1,15 @@
 import { ethers } from 'ethers';
-import { Petition, calculateHash, Message } from '@dfund/lib';
+import { Fund, calculateHash, Message } from '@dfund/lib';
 import { RootState } from '../types';
 import { BigNumber } from 'ethers/utils';
 import { get, add } from './ipfsService';
 
 import identityJson from '../../contracts/Identity/Identity.sol/Identity.json';
-import petitionJson from '../../contracts/Petition/Petition.sol/Petition.json';
+import fundJson from '../../contracts/Fund/Fund.sol/Fund.json';
 
-export const buildPetition = async (data: string[],
+export const buildFund = async (data: string[],
                                     signers: string[],
-                                    rootState: RootState): Promise<Petition> => {
+                                    rootState: RootState): Promise<Fund> => {
   const description = await get(rootState.ipfsClient, data[2]);
   return {
     address: data[0] as string,
@@ -20,20 +20,20 @@ export const buildPetition = async (data: string[],
   };
 };
 
-export const buildSignInput = async (rootState: RootState, petition: Petition) => {
+export const buildSignInput = async (rootState: RootState, fund: Fund) => {
   const message: Message =  {
     ...await buildDefaultMessage(rootState),
     gasLimit: new BigNumber(150000),
-    to: petition.address,
-    data: new ethers.utils.Interface(petitionJson.abi).functions.sign.encode([]),
+    to: fund.address,
+    data: new ethers.utils.Interface(fundJson.abi).functions.sign.encode([]),
   };
 
   return await finalizeMessage(message, rootState);
 };
 
-export const buildCreateInput = async (rootState: RootState, petition: Petition) => {
-  const descriptionHash = await add(rootState.ipfsClient, petition.description);
-  const params = [petition.title, descriptionHash, petition.expireOn.getTime()];
+export const buildCreateInput = async (rootState: RootState, fund: Fund) => {
+  const descriptionHash = await add(rootState.ipfsClient, fund.description);
+  const params = [fund.title, descriptionHash, fund.expireOn.getTime()];
 
   const message: Message =  {
     ...await buildDefaultMessage(rootState),

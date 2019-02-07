@@ -9,7 +9,7 @@ export interface Tracker {
   }
 }
 
-export interface Petition {
+export interface Fund {
   address?: string;
   title: string;
   description: string;
