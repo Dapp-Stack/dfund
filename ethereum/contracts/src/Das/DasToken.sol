@@ -2,10 +2,6 @@ pragma solidity ^0.5.0;
 
 import "./../Token/ERC20Mintable.sol";
 
-/**
- * @title ERC20Mintable
- * @dev ERC20 minting logic
- */
 contract DasToken is ERC20Mintable {
     uint8 constant public decimals = 18;
     string constant public name = "Das Token";

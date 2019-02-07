@@ -7,9 +7,6 @@ import "./Mixin/ERC20.sol";
  * @dev ERC20 minting logic
  */
 contract ERC20Mintable is ERC20 {
-    uint8 constant public decimals = 18;
-    string constant public name = "Petition Protocol Token";
-    string constant public symbol = "PPT";
     uint256 private _totalSupply = 0;
 
     /**
