@@ -29,9 +29,10 @@ contract Fund is Ownable, ERC20Mintable, ApproveAndCallFallBack {
             blend[tokens[i]] = _percentages[i];
         }
         require(sum == 100, "Percentages must be equal to 100");
+    }
 
-        democracy = new Democracy(address(this), 1);
-        _owner = address(democracy);
+    function initDemocracy() public {
+        
     }
 
     function get() public view returns(

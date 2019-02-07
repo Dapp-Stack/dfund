@@ -30,11 +30,11 @@ contract Democracy {
         address votingWeightToken,
         uint percentLossInEachRound
     ) public {
-        votingToken = IERC20(votingWeightToken);
-        delegatedVotes.length++;
-        delegatedVotes[0] = DelegatedVote({nominee: address(0), voter: address(0)});
-        delegatedPercent = 100 - percentLossInEachRound;
-        if (delegatedPercent > 100) delegatedPercent = 100;
+        // votingToken = IERC20(votingWeightToken);
+        // delegatedPercent = 100 - percentLossInEachRound;
+        // if (delegatedPercent > 100) {
+        //     delegatedPercent = 100;
+        // }
     }
 
     /**
@@ -87,7 +87,7 @@ contract Democracy {
         address currentWinner = appointee;
         uint currentMax = 0;
         uint weight = 0;
-        DelegatedVote storage v = delegatedVotes[0];
+        DelegatedVote memory v = DelegatedVote(address(0), address(0));
 
         if (now > lastWeightCalculation + 90 minutes) {
             numberOfDelegationRounds = 0;
