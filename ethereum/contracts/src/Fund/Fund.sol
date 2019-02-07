@@ -9,22 +9,22 @@ contract Fund is Ownable, ERC20Mintable, ApproveAndCallFallBack {
     string public symbol;
     uint256 public _totalSupply = 0;
     Democracy democracy;
-
+    address[] public tokens;
     mapping(address => uint256) public blend;
-
     mapping(address => mapping(address => uint256)) public pendingTokens;
     
-    constructor(string memory _name, string memory _symbol, address[] memory tokens, uint256[] memory percentages) public {
-        require(tokens.length == percentages.length, "Tokens and percentages do not match");
+    constructor(string memory _name, string memory _symbol, address[] memory _tokens, uint256[] memory _percentages) public {
+        require(_tokens.length == _percentages.length, "Tokens and percentages do not match");
 
         name = _name;
         symbol = _symbol;
+        tokens = _tokens;
 
         uint sum = 0;
         for (uint i = 0; i < tokens.length; i++) {
-            sum += percentages[i];
+            sum += _percentages[i];
             require(sum <= 100, "Percentages overflow");
-            blend[tokens[i]] = percentages[i];
+            blend[tokens[i]] = _percentages[i];
         }
         require(sum == 100, "Percentages must be equal to 100");
 
@@ -37,14 +37,39 @@ contract Fund is Ownable, ERC20Mintable, ApproveAndCallFallBack {
         token.transferFrom(from, address(this), _amount);
 
         pendingTokens[from][_token] += _amount;
+        mint(from);
     }
 
-    function mint(uint256 value) public returns (bool) {
-        require(enoughPendingTokensToMint(value), "Not enough token");
-        _mint(msg.sender, value);
+    function mint(address _to) public returns (bool) {
+        uint256 tokenToMint = tokenToMint(_to);
+        if (tokenToMint == 0) {
+            return false;
+        }
+        _mint(_to, tokenToMint);
+        _decreasePendingTokens(_to, tokenToMint);
         return true;
     }
 
-    function enoughPendingTokensToMint(uint256 _value) public returns (bool) {
+    function tokenToMint(address _to) public view returns (uint256) {
+        uint256 result = 0;
+        for (uint i = 0; i < tokens.length; i++) {
+            address token = tokens[i];
+            uint256 percentage = blend[token];
+            uint256 pendingToken = pendingTokens[_to][token];
+
+            uint256 possible = pendingToken / percentage;
+            if (possible < result || result == 0) {
+                result = possible;
+            }
+        }
+        return result;
+    }
+
+    function _decreasePendingTokens(address _to, uint256 _value) internal {
+        for (uint i = 0; i < tokens.length; i++) {
+            address token = tokens[i];
+            uint256 percentage = blend[token];
+            pendingTokens[_to][token] -= _value * percentage;
+        }
     }
 }
