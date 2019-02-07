@@ -2,10 +2,10 @@ pragma solidity ^0.5.0;
 
 import "./../Token/ERC20Mintable.sol";
 
-contract StnToken is ERC20Mintable {
+contract SntToken is ERC20Mintable {
     uint8 constant public decimals = 18;
     string constant public name = "Status Token";
-    string constant public symbol = "STN";
+    string constant public symbol = "SNT";
     uint256 private _totalSupply = 0;
 
     /**

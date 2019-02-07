@@ -3,15 +3,10 @@ const ethers = require("ethers");
 
 // const decryptedSecrets = JSON.parse(secrets.decrypt());
 
-const petitionTokenContracts = [
-  "PetitionToken/ERC20Mintable.sol",
-  "PetitionToken/MintedCrowdsale.sol",
-]
-
-async function deployPetitionTokenProtocol(deployer) {
-  const token = await deployer.deploy('ERC20Mintable');
+async function deployToken(tkn, deployer) {
+  const token = await deployer.deploy(`${tkn}Token`);
   const address = await deployer.signer.getAddress()
-  await deployer.deploy('MintedCrowdsale', 1, address, token.address);
+  await deployer.deploy(`${tkn}Crowdsale`, 1, address, token.address);
 }
 
 async function deployENSProtocol(deployer) {
@@ -22,20 +17,18 @@ const identityContracts = [
   "Identity/Identity.sol",
 ]
 
-const petitionContracts = [
-  "Petition/Petition.sol",
-  "Petition/Controller.sol",
-]
-
-async function deployPetitionProtocol(deployer) {
-  await deployer.deploy('Controller');
-}
-
 module.exports = {
   compile: {
     // List of contracts to compile
     solidity: {
-      "0.5.0": identityContracts.concat(petitionContracts).concat(petitionTokenContracts)
+      "0.5.0": [
+        'Identity/Identity.sol',
+        'Aapl/AaplToken.sol',
+        'Snt/SntToken.sol',
+        'Das/DasToken.sol',
+        'Aapl/AaplCrowdsale.sol',
+        'Snt/SntCrowdsale.sol',
+        'Das/DasCrowdsale.sol',]
     },
 
     // List of vyper contracts to compile
@@ -70,8 +63,9 @@ module.exports = {
     // Function executed by DApp Stack to deploy the contracts.
     migrate: async (deployer) => {
       await deployENSProtocol(deployer);
-      await deployPetitionTokenProtocol(deployer);
-      await deployPetitionProtocol(deployer);
+      await deployToken('Aapl', deployer);
+      await deployToken('Stn', deployer);
+      await deployToken('Das', deployer);
     }
   },
 
