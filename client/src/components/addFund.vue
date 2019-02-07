@@ -16,7 +16,7 @@
         <v-spacer></v-spacer>
         <v-toolbar-items>
           <v-btn
-            :disabled="!valid || loading"
+            :disabled="!checkTotal() || loading"
             :loading="loading"
             color="success"
             large
@@ -194,8 +194,13 @@ export default class AddFund extends Vue {
   }
 
   public updateToken(value, item) {
-    this.tokens[item.address] = +value;
+    if (value == 0) delete this.tokens[item.address];
+    else this.tokens[item.address] = +value;
     this.total = Object.values(this.tokens).reduce((a, b) => a + b, 0);
+  }
+
+  public checkTotal() {
+    return this.total === 100;
   }
 
   public async create() {
