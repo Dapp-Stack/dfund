@@ -40,10 +40,10 @@ export const actions: ActionTree<WalletState, RootState> = {
 
     await updateBalances(commit, rootState, remoteWallet.address);
   },
-  async buyPetitionToken({ commit, state, rootState, dispatch }, value: number) {
-    const overrides = { value: ethers.utils.parseEther(value.toString()) };
+  async buyToken({ commit, state, rootState, dispatch }, payload: { name: string, value: number }) {
+    const overrides = { value: ethers.utils.parseEther(payload.value.toString()) };
     const remoteWallet = buildWallet(rootState.provider, state.remote.privateKey, state.remote.mnemonic);
-    const crowdsale = (rootState.contracts.MintedCrowdsale[0]).connect(remoteWallet);
+    const crowdsale = (rootState.contracts[`${name}Crowdsale`][0]).connect(remoteWallet);
 
     const transaction: ethers.utils.Transaction = await crowdsale.buyTokens(rootState.identity.address, overrides);
     if (!transaction.hash) {
@@ -62,8 +62,8 @@ export const mutations: MutationTree<WalletState> = {
   setRemote(state, payload) {
     state.remote = payload;
   },
-  updateBalance(state, payload: { name: string, value: string }) {
-    state.remote.balances[payload.name] = payload.value;
+  updateBalance(state, payload: { name: string, value: string, usd: number }) {
+    state.remote.balances[payload.name] = { value: payload.value, usd: payload.usd };
   },
   clean(state) {
     state.local = {

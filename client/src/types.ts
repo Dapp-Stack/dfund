@@ -2,7 +2,10 @@ import { ethers } from 'ethers';
 import { Contracts, Fund } from '@dfund/lib';
 
 export interface Balances {
-  [currency: string]: string;
+  [currency: string]: {
+    value: string;
+    usd: number;
+  };
 }
 
 export interface FundState {

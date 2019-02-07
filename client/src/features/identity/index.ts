@@ -62,8 +62,8 @@ export const mutations: MutationTree<IdentityState> = {
   setAddress(state, payload: { address: string }) {
     state.address = payload.address;
   },
-  updateBalance(state, payload: { name: string, value: string }) {
-    state.balances[payload.name] = payload.value;
+  updateBalance(state, payload: { name: string, value: string, usd: number }) {
+    state.balances[payload.name] = { value: payload.value, usd: payload.usd };
   },
 };
 

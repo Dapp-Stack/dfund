@@ -78,7 +78,7 @@ export const mutations: MutationTree<FundState> = {
     state.list.push(payload);
   },
   signFund(state, payload: { address: string, signer: string}) {
-  }
+  },
 };
 
 const namespaced: boolean = true;

@@ -77,8 +77,8 @@ export default class Wallet extends Vue {
   @Action('generateRemote', { namespace: 'wallet' }) private generateRemote!: (
     payload: { privateKey?: string; mnemonic?: string },
   ) => void;
-  @Action('buyPetitionToken', { namespace: 'wallet' }) private buyPetitionToken!: (
-    payload: number,
+  @Action('buyPetitionToken', { namespace: 'wallet' }) private buyToken!: (
+    payload: { name: string, value: number },
   ) => void;
   @State('remote', { namespace: 'wallet' }) private wallet!: { address: string, balances: Balances };
   @State('ethUsdPrice') private ethUsdPrice!: number;
@@ -88,8 +88,7 @@ export default class Wallet extends Vue {
   }
 
   public async buy() {
-    await this.buyPetitionToken(this.tokenToBuy);
-    this.$router.push('/');
+    await this.buyToken({name: 'Das', value: this.tokenToBuy});
   }
 
   public getUSDPrice() {

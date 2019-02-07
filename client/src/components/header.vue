@@ -54,12 +54,12 @@
           
           <v-divider></v-divider>
           
-          <v-layout row>
-            <v-flex xs=6 v-for="(value, key) in balances" :key="key">
+          <v-layout column>
+            <v-flex class="mb-2" v-for="(balance, key) in balances" :key="key">
               <v-list-tile>
                 <v-list-tile-content>
-                  <v-list-tile-title class="text-xs-center">{{value}}</v-list-tile-title>
-                  <v-list-tile-sub-title class="text-xs-center">{{key}}</v-list-tile-sub-title>
+                  <v-list-tile-title class="text-xs-center">{{balance.value}} {{key}}</v-list-tile-title>
+                  <v-list-tile-sub-title class="text-xs-center">${{balance.usd * balance.value}}</v-list-tile-sub-title>
                 </v-list-tile-content>
               </v-list-tile>
             </v-flex>
