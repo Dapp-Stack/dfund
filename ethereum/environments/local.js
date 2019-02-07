@@ -64,7 +64,7 @@ module.exports = {
     migrate: async (deployer) => {
       await deployENSProtocol(deployer);
       await deployToken('Aapl', deployer);
-      await deployToken('Stn', deployer);
+      await deployToken('Snt', deployer);
       await deployToken('Das', deployer);
     }
   },
