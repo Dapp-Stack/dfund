@@ -53,10 +53,11 @@ export const actions: ActionTree<FundState, RootState> = {
     const receipt = await waitForTransactionReceipt(rootState.provider, transaction.hash);
     const contract = new ethers.Contract(payload.fund.address, fundJson.abi, rootState.provider);
     const txEvents = extractTransactionEvents(receipt, contract);
-    if (!txEvents.FundSigned) {
+    console.dir(txEvents);
+    if (!txEvents.Minted) {
       return;
     }
-    commit('signFund', {address: payload.address, signer: txEvents.FundSigned[0]});
+    commit('minted', {address: payload.fund.address, event: txEvents.Minted[0]});
     dispatch('identity/fetchBalances', {}, { root: true });
   },
   async list({ commit, rootState }) {
@@ -80,7 +81,7 @@ export const mutations: MutationTree<FundState> = {
   addFund(state, payload: Fund) {
     state.list.push(payload);
   },
-  signFund(state, payload: { address: string, signer: string}) {
+  minted(state, payload: { address: string, event: any}) {
   },
 };
 

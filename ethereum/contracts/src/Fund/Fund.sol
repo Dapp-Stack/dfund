@@ -5,9 +5,14 @@ import "./Democracy.sol";
 
 contract Fund is Ownable, ERC20Mintable, ApproveAndCallFallBack {
 
+    event Minted(
+        address to,
+        uint256 value
+    );
+
     string public name;
     string public symbol;
-    uint256 public _totalSupply = 0;
+    uint256 public _totalSupply;
     Democracy public democracy;
     address[] public tokens;
     uint256[] public percentages;
@@ -49,7 +54,8 @@ contract Fund is Ownable, ERC20Mintable, ApproveAndCallFallBack {
 
     function receiveApproval(address from, uint256 _amount, address _token, bytes memory _data) public {
         ERC20Mintable token = ERC20Mintable(_token);
-        token.transferFrom(from, address(this), _amount);
+        bool result = token.transferFrom(from, address(this), _amount);
+        require(result, "Cannot mint");
 
         pendingTokens[from][_token] += _amount;
         mint(from);
@@ -62,6 +68,8 @@ contract Fund is Ownable, ERC20Mintable, ApproveAndCallFallBack {
         }
         _mint(_to, tokenToMint);
         _decreasePendingTokens(_to, tokenToMint);
+        _totalSupply += tokenToMint;
+        emit Minted(_to, tokenToMint);
         return true;
     }
 
