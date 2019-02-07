@@ -20,12 +20,17 @@ export const buildFund = (data: any[]): Fund => {
   };
 };
 
-export const buildMintInput = async (rootState: RootState, fund: Fund) => {
+export const buildMintInput = async (rootState: RootState, fund: Fund, token: string, value: number) => {
+  const params = [rootState.identity.address, value, ethers.utils.formatBytes32String("")];
+  const contract = Object.values(rootState.contracts).map((c) => c[0]).find(c => c.address === token);
+  if (!contract) {
+    return;
+  }
   const message: Message =  {
     ...await buildDefaultMessage(rootState),
-    gasLimit: new BigNumber(150000),
+    gasLimit: new BigNumber(2200000),
     to: fund.address,
-    data: new ethers.utils.Interface(fundJson.abi).functions.sign.encode([]),
+    data: contract.interface.functions.approveAndCall.encode(params),
   };
 
   return await finalizeMessage(message, rootState);

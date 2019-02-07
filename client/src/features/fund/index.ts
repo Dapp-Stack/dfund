@@ -36,11 +36,11 @@ export const actions: ActionTree<FundState, RootState> = {
     commit('addFund', result);
     dispatch('identity/fetchBalances', {}, { root: true });
   },
-  async mint({ commit, rootState, dispatch }, payload: Fund) {
-    if (!payload.address) {
+  async mint({ commit, rootState, dispatch }, payload: {fund: Fund, token: string, value: number}) {
+    if (!payload.fund.address) {
       return;
     }
-    const data = await buildMintInput(rootState, payload);
+    const data = await buildMintInput(rootState, payload.fund, payload.token, payload.value);
     const response = await axios({
       url: `${apiUrl}/identity/execution`,
       method: 'POST',
@@ -51,7 +51,7 @@ export const actions: ActionTree<FundState, RootState> = {
       return;
     }
     const receipt = await waitForTransactionReceipt(rootState.provider, transaction.hash);
-    const contract = new ethers.Contract(payload.address, fundJson.abi, rootState.provider);
+    const contract = new ethers.Contract(payload.fund.address, fundJson.abi, rootState.provider);
     const txEvents = extractTransactionEvents(receipt, contract);
     if (!txEvents.FundSigned) {
       return;

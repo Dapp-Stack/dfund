@@ -57,7 +57,7 @@
                             outline></v-text-field>
             </v-flex>
             <v-flex class="pb-5">
-              <v-btn @click="mint" color="success">Transfer And Mint</v-btn>
+              <v-btn @click="transferAndMint" color="success">Transfer And Mint</v-btn>
             </v-flex>
           </v-card-actions>
         </v-card>
