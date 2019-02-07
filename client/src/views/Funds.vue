@@ -9,14 +9,15 @@
         >
           <template slot="no-data">
             <v-alert :value="true" color="warning" icon="fa fa-warning" class="text-xs-center my-5">
-              There is no funds to sign yet, why not adding one.
+              There is no fund yet, why not adding one.
             </v-alert>
           </template>
           <template slot="items" slot-scope="props">
             <router-link tag="tr" class="tr-link" :to="`/funds/${props.item.address}`">
-              <td>{{ props.item.title }}</td>
-              <td>{{ props.item.expireOn | moment("dddd, MMMM Do YYYY, h:mm:ss a") }}</td>
-              <td>{{ props.item.signers.length }}</td>
+              <td>{{ props.item.address }}</td>
+              <td>{{ props.item.name }}</td>
+              <td>{{ props.item.symbol }}</td>
+              <td>{{ Object.keys(props.item.tokens).map((address) => `${address} - ${props.item.tokens[address]}%`) }}</td>
             </router-link>
           </template>
         </v-data-table>
@@ -33,9 +34,10 @@ import { Component, Watch } from 'vue-property-decorator';
 @Component
 export default class Funds extends Vue {
   public headers = [
-    { text: 'Title', value: 'title' },
-    { text: 'Expire On', value: 'expireOn' },
-    { text: 'Signers', value: 'signers' },
+    { text: 'Address', value: 'address' },
+    { text: 'Name', value: 'name' },
+    { text: 'Symbol', value: 'symbol' },
+    { text: 'Tokens', value: 'Tokens' },
   ];
 
   @State('list', { namespace: 'fund' }) private funds!: any[];
