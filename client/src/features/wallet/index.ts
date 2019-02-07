@@ -40,8 +40,8 @@ export const actions: ActionTree<WalletState, RootState> = {
 
     await updateBalances(commit, rootState, remoteWallet.address);
   },
-  async buyToken({ commit, state, rootState, dispatch }, payload: { name: string, value: number }) {
-    const overrides = { value: ethers.utils.parseEther(payload.value.toString()) };
+  async buyToken({ commit, state, rootState, dispatch }, payload: { name: string, value: ethers.utils.BigNumber }) {
+    const overrides = { value: payload.value };
     const remoteWallet = buildWallet(rootState.provider, state.remote.privateKey, state.remote.mnemonic);
     const crowdsale = (rootState.contracts[`${payload.name}Crowdsale`][0]).connect(remoteWallet);
 

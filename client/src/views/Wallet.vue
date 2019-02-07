@@ -89,6 +89,7 @@
 import Vue from 'vue';
 import { Action, State } from 'vuex-class';
 import { Component, Watch, Prop } from 'vue-property-decorator';
+import { utils } from 'ethers';
 import Blockies from '../components/blockies.vue';
 import { Balances } from '../types';
 
@@ -106,7 +107,7 @@ export default class Wallet extends Vue {
     payload: { privateKey?: string; mnemonic?: string },
   ) => void;
   @Action('buyToken', { namespace: 'wallet' }) private buyToken!: (
-    payload: { name: string, value: number },
+    payload: { name: string, value: utils.BigNumber },
   ) => void;
   @State('remote', { namespace: 'wallet' }) private wallet!: { address: string, balances: Balances };
   @State('prices') private prices!: any;
@@ -116,15 +117,15 @@ export default class Wallet extends Vue {
   }
 
   public async buyAapl() {
-    await this.buyToken({name: 'Aa[;', value: this.sntTokenToBuy});
+    await this.buyToken({name: 'Aapl', value: new utils.BigNumber(this.aaplTokenToBuy)});
   }
 
   public async buyDas() {
-    await this.buyToken({name: 'Das', value: this.sntTokenToBuy});
+    await this.buyToken({name: 'Das', value: utils.parseEther(this.dasTokenToBuy.toString())});
   }
 
   public async buySnt() {
-    await this.buyToken({name: 'Snt', value: this.sntTokenToBuy});
+    await this.buyToken({name: 'Snt', value: new utils.BigNumber(this.sntTokenToBuy)});
   }
 
   public getUSDPriceSnt() {
