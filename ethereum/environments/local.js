@@ -13,9 +13,9 @@ async function deployENSProtocol(deployer) {
   await deployer.ens.bootstrapWith('petition', 'eth');
 }
 
-const identityContracts = [
-  "Identity/Identity.sol",
-]
+async function deployController(deployer) {
+  const controller = await deployer.deploy('Controller');
+}
 
 module.exports = {
   compile: {
@@ -28,7 +28,11 @@ module.exports = {
         'Das/DasToken.sol',
         'Aapl/AaplCrowdsale.sol',
         'Snt/SntCrowdsale.sol',
-        'Das/DasCrowdsale.sol',]
+        'Das/DasCrowdsale.sol',
+        'Fund/Fund.sol',
+        'Fund/Democracy.sol',
+        'Fund/Controller.sol',
+      ]
     },
 
     // List of vyper contracts to compile
@@ -66,6 +70,7 @@ module.exports = {
       await deployToken('Aapl', deployer);
       await deployToken('Snt', deployer);
       await deployToken('Das', deployer);
+      await deployController(deployer);
     }
   },
 

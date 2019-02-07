@@ -1,16 +1,17 @@
 pragma solidity ^0.5.0;
 
-import "./Mixin/Ownable.sol";
 import "./Fund.sol";
 
-contract Controller is Ownable {
+contract Controller {
 
-    event FundCreated();
+    event FundCreated(address _address, string _name, string _symbol, address[] tokens, uint256[] percentages);
 
     address[] public funds;
 
-    function create() public {
-        emit FundCreated();
+    function create(string memory _name, string memory _symbol, address[] memory tokens, uint256[] memory percentages) public {
+        Fund fund = new Fund(_name, _symbol, tokens, percentages);
+        funds.push(address(fund));
+        emit FundCreated(address(fund), _name, _symbol, tokens, percentages);
     }
 
     function getAddresses() public view returns(address[] memory) {

@@ -1,6 +1,6 @@
 pragma solidity ^0.5.0;
 
-import "../Interfaces/IERC20.sol";
+import "../Token/ERC20Mintable.sol";
 
 contract Democracy {
     IERC20 public votingToken;
@@ -15,7 +15,6 @@ contract Democracy {
 
     uint public numberOfVotes;
     DelegatedVote[] public delegatedVotes;
-    string public forbiddenFunction;
 
     event NewAppointee(address newAppointee, bool changed);
 
@@ -29,13 +28,11 @@ contract Democracy {
      */
     constructor(
         address votingWeightToken,
-        string memory forbiddenFunctionCall,
         uint percentLossInEachRound
     ) public {
         votingToken = IERC20(votingWeightToken);
         delegatedVotes.length++;
         delegatedVotes[0] = DelegatedVote({nominee: address(0), voter: address(0)});
-        forbiddenFunction = forbiddenFunctionCall;
         delegatedPercent = 100 - percentLossInEachRound;
         if (delegatedPercent > 100) delegatedPercent = 100;
     }
@@ -73,7 +70,6 @@ contract Democracy {
     function execute(address target, uint valueInWei, bytes32 bytecode) public {
         require(msg.sender == appointee                             // If caller is the current appointee,
             && !underExecution                                      // if the call is being executed,
-            && bytes4(bytecode) != bytes4(keccak256(abi.encodePacked(forbiddenFunction)))  // and it's not trying to do the forbidden function
             && numberOfDelegationRounds >= 4);                      // and delegation has been calculated enough
 
         underExecution = true;
