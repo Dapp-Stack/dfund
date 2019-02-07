@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { Contracts, Petition } from '@dpetition/lib';
+import { Contracts, Petition } from '@dfund/lib';
 
 export interface Balances {
   [currency: string]: string;

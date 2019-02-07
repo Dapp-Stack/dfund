@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { waitForTransactionReceipt } from '@dpetition/lib';
+import { waitForTransactionReceipt } from '@dfund/lib';
 import { Module, ActionTree, MutationTree } from 'vuex';
 import { ethers } from 'ethers';
 

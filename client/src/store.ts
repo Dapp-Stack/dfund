@@ -4,7 +4,7 @@ import Vuex, { StoreOptions, MutationTree, ActionTree } from 'vuex';
 import { Network } from 'ethers/utils';
 import cc from 'cryptocompare';
 import VuexPersist from 'vuex-persist';
-import { Tracker, loadContracts } from '@dpetition/lib';
+import { Tracker, loadContracts } from '@dfund/lib';
 
 import Authorisation from './features/authorisation';
 import Ens, { defaultState as ensDefaultState } from './features/ens';

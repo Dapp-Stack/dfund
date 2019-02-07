@@ -45,7 +45,7 @@
 import Vue from 'vue';
 import { Action, State } from 'vuex-class';
 import { Component, Watch } from 'vue-property-decorator';
-import { Petition } from '@dpetition/lib';
+import { Petition } from '@dfund/lib';
 
 @Component
 export default class ShowPetition extends Vue {

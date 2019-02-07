@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { Petition, calculateHash, Message } from '@dpetition/lib';
+import { Petition, calculateHash, Message } from '@dfund/lib';
 import { RootState } from '../types';
 import { BigNumber } from 'ethers/utils';
 import { get, add } from './ipfsService';

@@ -1,7 +1,6 @@
 import { Module, ActionTree, MutationTree } from 'vuex';
 import { ethers } from 'ethers';
-import { BigNumber } from 'ethers/utils';
-import { waitForTransactionReceipt } from '@dpetition/lib';
+import { waitForTransactionReceipt } from '@dfund/lib';
 
 import { RootState, WalletState } from '../../types';
 import { buildWallet } from '../../services/walletService';

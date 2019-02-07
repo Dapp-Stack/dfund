@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { Module, ActionTree, MutationTree } from 'vuex';
-import { waitForTransactionReceipt, extractTransactionEvents, Petition } from '@dpetition/lib';
+import { waitForTransactionReceipt, extractTransactionEvents, Petition } from '@dfund/lib';
 import { ethers } from 'ethers';
 
 import { apiUrl } from '../../config';

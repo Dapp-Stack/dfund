@@ -1,6 +1,6 @@
 import * as ethers from 'ethers';
 import tracker from '../../tracker.json';
-import { loadContracts, Contracts } from "@dpetition/lib";
+import { loadContracts, Contracts } from "@dfund/lib";
 
 const jsonRpcUrl = process.env.JSON_RPC_URL || 'http://localhost:8545';
 const privateKey = process.env.PRIVATE_KEY || '';

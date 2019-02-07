@@ -209,7 +209,7 @@ import {
   Underline,
   History,
 } from 'tiptap-extensions';
-import { Petition } from '@dpetition/lib';
+import { Petition } from '@dfund/lib';
 import moment from 'moment';
 
 const tomorrow = () => moment(new Date()).add(1, 'days');

@@ -1,5 +1,5 @@
 {
-  "name": "@dpetition/relayer",
+  "name": "@dfund/relayer",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -12,7 +12,7 @@
     "dev:server": "PRIVATE_KEY=f84108908243d78b74a664935b93053c358a6e226a707b381b6bda5ed427d0f5 nodemon bin/www -w dist -i dist/tracker.json"
   },
   "dependencies": {
-    "@dpetition/lib": "0.1.0",
+    "@dfund/lib": "0.1.0",
     "cors": "^2.8.5",
     "debug": "~2.6.9",
     "ethers": "^4.0.20",
