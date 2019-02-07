@@ -2,25 +2,24 @@ import { ethers } from 'ethers';
 import { Fund, calculateHash, Message } from '@dfund/lib';
 import { RootState } from '../types';
 import { BigNumber } from 'ethers/utils';
-import { get, add } from './ipfsService';
 
 import identityJson from '../../contracts/Identity/Identity.sol/Identity.json';
 import fundJson from '../../contracts/Fund/Fund.sol/Fund.json';
 
-export const buildFund = async (data: string[],
-                                    signers: string[],
-                                    rootState: RootState): Promise<Fund> => {
-  const description = await get(rootState.ipfsClient, data[2]);
+export const buildFund = (data: any[]): Fund => {
   return {
     address: data[0] as string,
-    title: data[1] as string,
-    description,
-    expireOn: new Date(parseInt(data[3], 10)),
-    signers,
+    name: data[1] as string,
+    symbol: data[2] as string,
+    supply: data[3] as number,
+    democracy: data[4] as string,
+    tokens: data[5].reduce((acc: any, address: string, index: number) => {
+      acc[address] = data[6][index];
+    }, {}),
   };
 };
 
-export const buildSignInput = async (rootState: RootState, fund: Fund) => {
+export const buildMintInput = async (rootState: RootState, fund: Fund) => {
   const message: Message =  {
     ...await buildDefaultMessage(rootState),
     gasLimit: new BigNumber(150000),
@@ -32,8 +31,7 @@ export const buildSignInput = async (rootState: RootState, fund: Fund) => {
 };
 
 export const buildCreateInput = async (rootState: RootState, fund: Fund) => {
-  const descriptionHash = await add(rootState.ipfsClient, fund.description);
-  const params = [fund.title, descriptionHash, fund.expireOn.getTime()];
+  const params = [fund.name, fund.symbol, Object.keys(fund.tokens), Object.values(fund.tokens)];
 
   const message: Message =  {
     ...await buildDefaultMessage(rootState),

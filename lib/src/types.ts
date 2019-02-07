@@ -16,8 +16,8 @@ export interface Fund {
   tokens: {
     [address: string]: number;
   };
-  supply: number;
-  democracy: string;
+  supply?: number;
+  democracy?: string;
 }
 
 export interface Contracts {

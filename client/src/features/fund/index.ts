@@ -5,7 +5,7 @@ import { ethers } from 'ethers';
 
 import { apiUrl } from '../../config';
 import { RootState, FundState } from '../../types';
-import { buildFund, buildCreateInput, buildSignInput } from '../../services/fundService';
+import { buildFund, buildCreateInput, buildMintInput } from '../../services/fundService';
 import fundJson from '../../../contracts/Fund/Fund.sol/Fund.json';
 
 export const defaultState: FundState = {
@@ -29,15 +29,15 @@ export const actions: ActionTree<FundState, RootState> = {
     if (!txEvents.FundCreated) {
       return;
     }
-    const result = await buildFund(Object.values(txEvents.FundCreated), [], rootState);
+    const result = await buildFund(Object.values(txEvents.FundCreated));
     commit('addFund', result);
     dispatch('identity/fetchBalances', {}, { root: true });
   },
-  async sign({ commit, rootState, dispatch }, payload: Fund) {
+  async mint({ commit, rootState, dispatch }, payload: Fund) {
     if (!payload.address) {
       return;
     }
-    const data = await buildSignInput(rootState, payload);
+    const data = await buildMintInput(rootState, payload);
     const response = await axios({
       url: `${apiUrl}/identity/execution`,
       method: 'POST',
@@ -63,8 +63,7 @@ export const actions: ActionTree<FundState, RootState> = {
     const promises = addresses.map(async (address) => {
       const contract = new ethers.Contract(address, fundJson.abi, rootState.provider);
       const data = await contract.get();
-      const signers = await contract.getSigners();
-      return await buildFund(data, signers, rootState);
+      return await buildFund(data);
     });
     const funds: Fund[] = await Promise.all(promises);
     commit('updateFunds', funds);
@@ -79,12 +78,7 @@ export const mutations: MutationTree<FundState> = {
     state.list.push(payload);
   },
   signFund(state, payload: { address: string, signer: string}) {
-    const foundedFund = state.list.find((p) => p.address === payload.address);
-    if (!foundedFund) {
-      return;
-    }
-    foundedFund.signers.push(payload.signer);
-  },
+  }
 };
 
 const namespaced: boolean = true;

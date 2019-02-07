@@ -8,7 +8,7 @@ contract Fund is Ownable, ERC20Mintable, ApproveAndCallFallBack {
     string public name;
     string public symbol;
     uint256 public _totalSupply = 0;
-    Democracy democracy;
+    Democracy public democracy;
     address[] public tokens;
     uint256[] public percentages;
     mapping(address => uint256) public blend;
@@ -34,8 +34,16 @@ contract Fund is Ownable, ERC20Mintable, ApproveAndCallFallBack {
         _owner = address(democracy);
     }
 
-    function get() public view returns(string memory, string memory, uint256, address, address[] memory, uint256[] memory) {
-        return (name, symbol, _totalSupply, address(democracy), tokens, percentages);
+    function get() public view returns(
+        address _address,
+        string memory,
+        string memory,
+        uint256,
+        address,
+        address[] memory,
+        uint256[] memory
+    ) {
+        return (address(this), name, symbol, _totalSupply, address(democracy), tokens, percentages);
     }
 
     function receiveApproval(address from, uint256 _amount, address _token, bytes memory _data) public {

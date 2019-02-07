@@ -14,7 +14,6 @@ import Wallet, { defaultState as walletDefaultState } from './features/wallet';
 
 import { apiUrl, provider } from './config';
 import { RootState } from './types';
-import { connect } from './services/ipfsService';
 
 Vue.use(Vuex);
 
@@ -37,7 +36,6 @@ const defaultState: RootState = {
   ready: false,
   ethUsdPrice: 0,
   provider,
-  ipfsClient: null,
   identity: identityDefaultState,
   ens: ensDefaultState,
   fund: fundDefaultState,
@@ -48,7 +46,6 @@ const mutations: MutationTree<RootState> = {
   setRootState(state, payload) {
     state.network = payload.network;
     state.contracts = payload.contracts;
-    state.ipfsClient = payload.ipfsClient;
     state.ready = true;
   },
   updateEthUsdPrice(state, payload) {
@@ -68,7 +65,6 @@ const actions: ActionTree<RootState, RootState> = {
   },
   async init({ commit, dispatch }) {
     try {
-      const ipfsClient = await connect();
       const response = await axios({ url: `${apiUrl}/config` });
       const payload: Network = response && response.data;
       const network = await provider.getNetwork();
@@ -78,12 +74,12 @@ const actions: ActionTree<RootState, RootState> = {
       }
 
       const contracts = loadContracts(network, window.tracker, provider);
-      commit('setRootState', { ipfsClient, network, contracts });
+      commit('setRootState', { network, contracts });
       dispatch('identity/fetchBalances', {}, { root: true });
       dispatch('fetchPrice');
       dispatch('initPriceRoutine');
     } catch (error) {
-      commit('setRootState', { ipfsClient: null, network: NULL_NETWORK, contract: {} });
+      commit('setRootState', { network: NULL_NETWORK, contract: {} });
     }
   },
 };
