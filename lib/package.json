@@ -1,0 +1,18 @@
+{
+  "name": "@dpetition/lib",
+  "version": "0.1.0",
+  "private": true,
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "lint": "tslint -c tslint.json -p tsconfig.json",
+    "dev": "tsc --watch --pretty --preserveWatchOutput"
+  },
+  "dependencies": {
+    "ethers": "^4.0.20"
+  },
+  "devDependencies": {
+    "@types/node": "^9.4.6",
+    "tslint": "^5.9.1"
+  }
+}

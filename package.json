@@ -1,0 +1,25 @@
+{
+  "name": "@dpetition/workspace",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": {
+    "packages": [
+      "relayer",
+      "ethereum",
+      "lib",
+      "client"
+    ],
+    "nohoist": [
+      "**/font-awesome",
+      "**/roboto-fontface",
+      "**/vuetify"
+    ]
+  },
+  "scripts": {
+    "dev": "lerna run --parallel dev"
+  },
+  "devDependencies": {
+    "lerna": "^3.10.7",
+    "typescript": "^3.0.0"
+  }
+}
