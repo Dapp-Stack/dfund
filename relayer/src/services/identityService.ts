@@ -47,6 +47,7 @@ export default class IdentityService {
     const transaction = this.buildTransaction(message);
     const { wallet, provider } = this.jsonRpcService;
     const estimateGas = await provider.estimateGas({...transaction, from: wallet.address});
+    console.dir(estimateGas.toString());
     if (!utils.bigNumberify(message.gasLimit).gte(estimateGas)) {
       throw new Error('Not enough Gas');
     }

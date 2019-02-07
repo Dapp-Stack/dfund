@@ -35,7 +35,7 @@ export const buildCreateInput = async (rootState: RootState, fund: Fund) => {
 
   const message: Message =  {
     ...await buildDefaultMessage(rootState),
-    gasLimit: new BigNumber(1000000),
+    gasLimit: new BigNumber(2200000),
     to: rootState.contracts.Controller[0].address,
     data: rootState.contracts.Controller[0].interface.functions.create.encode(params),
   };
