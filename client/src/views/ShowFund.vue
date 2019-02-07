@@ -1,7 +1,7 @@
 <template>
   <v-container grid-list-xl>
     <v-snackbar v-model="snackbar" bottom multi-line>
-      Petition Signed
+      Fund Signed
       <v-btn color="pink" flat @click="snackbar = false">
         Close
       </v-btn>
@@ -18,16 +18,16 @@
         </v-card-text>
       </v-card>
     </v-dialog>
-    <v-layout v-if="petition" align-center justify-center row>
+    <v-layout v-if="fund" align-center justify-center row>
       <v-flex xs12>
         <v-card class="mt-5">
           <v-card-title>
             <v-icon large left>fa-header</v-icon>
-            <span class="title font-weight-light">{{petition.title}}</span>
+            <span class="title font-weight-light">{{fund.title}}</span>
             <v-spacer></v-spacer>
-            <p class="title font-weight-light">{{petition.signers.length}} signer(s)</p>
+            <p class="title font-weight-light">{{fund.signers.length}} signer(s)</p>
           </v-card-title>
-          <v-card-text v-html="petition.description"></v-card-text>
+          <v-card-text v-html="fund.description"></v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn v-if="!isSigner()" @click="sign" color="success" :disabled="loading" :loading="loading">
@@ -45,39 +45,39 @@
 import Vue from 'vue';
 import { Action, State } from 'vuex-class';
 import { Component, Watch } from 'vue-property-decorator';
-import { Petition } from '@dfund/lib';
+import { Fund } from '@dfund/lib';
 
 @Component
-export default class ShowPetition extends Vue {
-  public petition: Petition | null = null;
+export default class ShowFund extends Vue {
+  public fund: Fund | null = null;
   public snackbar = false;
   public loading = false;
 
-  @Action('list', { namespace: 'petition' }) private fetch!: () => void;
-  @Action('sign', { namespace: 'petition' }) private signPetition!: (petition: Petition) => void;
-  @State('list', { namespace: 'petition' }) private petitions!: Petition[];
+  @Action('list', { namespace: 'fund' }) private fetch!: () => void;
+  @Action('sign', { namespace: 'fund' }) private signFund!: (fund: Fund) => void;
+  @State('list', { namespace: 'fund' }) private funds!: Fund[];
   @State('address', { namespace: 'identity' }) private address!: string;
   @State('ethUsdPrice') private ethUsdPrice!: number;
 
   public async mounted() {
-    if (this.petitions.length === 0) {
+    if (this.funds.length === 0) {
       await this.fetch();
     }
-    this.petition = this.petitions.find((p) => p.address === this.$route.params.address) || null;
+    this.fund = this.funds.find((p) => p.address === this.$route.params.address) || null;
   }
 
   public async sign() {
-    if (!this.petition) {
+    if (!this.fund) {
       return;
     }
     this.loading = true;
-    await this.signPetition(this.petition);
+    await this.signFund(this.fund);
     this.snackbar = true;
     this.loading = false;
   }
 
   public isSigner() {
-    return this.petition && this.petition.signers.includes(this.address);
+    return this.fund && this.fund.signers.includes(this.address);
   }
 }
 </script>

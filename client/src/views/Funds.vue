@@ -4,16 +4,16 @@
       <v-flex>
         <v-data-table
           :headers="headers"
-          :items="petitions"
+          :items="funds"
           class="elevation-1 mt-5"
         >
           <template slot="no-data">
             <v-alert :value="true" color="warning" icon="fa fa-warning" class="text-xs-center my-5">
-              There is no petitions to sign yet, why not adding one.
+              There is no funds to sign yet, why not adding one.
             </v-alert>
           </template>
           <template slot="items" slot-scope="props">
-            <router-link tag="tr" class="tr-link" :to="`/petitions/${props.item.address}`">
+            <router-link tag="tr" class="tr-link" :to="`/funds/${props.item.address}`">
               <td>{{ props.item.title }}</td>
               <td>{{ props.item.expireOn | moment("dddd, MMMM Do YYYY, h:mm:ss a") }}</td>
               <td>{{ props.item.signers.length }}</td>
@@ -31,15 +31,15 @@ import { Action, State } from 'vuex-class';
 import { Component, Watch } from 'vue-property-decorator';
 
 @Component
-export default class Petitions extends Vue {
+export default class Funds extends Vue {
   public headers = [
     { text: 'Title', value: 'title' },
     { text: 'Expire On', value: 'expireOn' },
     { text: 'Signers', value: 'signers' },
   ];
 
-  @State('list', { namespace: 'petition' }) private petitions!: any[];
-  @Action('list', { namespace: 'petition' }) private fetch!: () => void;
+  @State('list', { namespace: 'fund' }) private funds!: any[];
+  @Action('list', { namespace: 'fund' }) private fetch!: () => void;
 
   public async mounted() {
     this.fetch();

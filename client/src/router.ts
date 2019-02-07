@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import Petitions from './views/Petitions.vue';
+import Funds from './views/Funds.vue';
 
 Vue.use(Router);
 
@@ -10,13 +10,13 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'petitions',
-      component: Petitions,
+      name: 'funds',
+      component: Funds,
     },
     {
-      path: '/petitions/:address',
-      name: 'petition',
-      component: () => import(/* webpackChunkName: "wallet" */ './views/ShowPetition.vue'),
+      path: '/funds/:address',
+      name: 'fund',
+      component: () => import(/* webpackChunkName: "wallet" */ './views/ShowFund.vue'),
     },
     {
       path: '/connect',
