@@ -124,64 +124,64 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Action, State } from "vuex-class";
-import { Component, Watch, Prop } from "vue-property-decorator";
-import { Fund } from "@dfund/lib";
+import Vue from 'vue';
+import { Action, State } from 'vuex-class';
+import { Component, Watch, Prop } from 'vue-property-decorator';
+import { Fund } from '@dfund/lib';
 
-const nameRequired = (v: string) => !!v || "Fund name is required";
+const nameRequired = (v: string) => !!v || 'Fund name is required';
 const nameLength = (v: string) =>
-  (v && v.length <= 50) || "Fund name must be less than 50 characters";
-const symbolRequired = (v: string) => !!v || "Fund symbol is required";
+  (v && v.length <= 50) || 'Fund name must be less than 50 characters';
+const symbolRequired = (v: string) => !!v || 'Fund symbol is required';
 const symbolLength = (v: string) =>
-  (v && v.length <= 5) || "Fund symbol must be less than 5 characters";
+  (v && v.length <= 5) || 'Fund symbol must be less than 5 characters';
 const percentageMaxValue = (v: number) =>
-  (v && v <= 100) || "The maximum percentage is 100%";
+  (v && v <= 100) || 'The maximum percentage is 100%';
 
 @Component
 export default class AddFund extends Vue {
   public valid: boolean = false;
-  public name: string = "";
+  public name: string = '';
   public nameRules = [nameRequired, nameLength];
-  public symbol: string = "";
+  public symbol: string = '';
   public symbolRules = [symbolRequired, symbolLength];
   public percentageRules = [percentageMaxValue];
   public loading = false;
   public el: number = 0;
   public tokens = {};
   public items = [
-    { header: "Available Tokens" },
+    { header: 'Available Tokens' },
     {
-      avatar: "https://cdn.vuetifyjs.com/images/lists/1.jpg",
-      token_symbol: "AAPL",
+      avatar: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
+      token_symbol: 'AAPL',
       description:
-        "<span class='text--primary'>$3.022</span> &mdash; Apple stocks tokenApple stocks tokenApple stocks tokenApple stocks tokenApple stocks token"
+        '<span class=\'text--primary\'>$3.022</span> &mdash; Apple stocks tokenApple stocks tokenApple stocks tokenApple stocks tokenApple stocks token',
     },
     { divider: true, inset: true },
     {
-      avatar: "https://cdn.vuetifyjs.com/images/lists/2.jpg",
-      token_symbol: "DAS",
+      avatar: 'https://cdn.vuetifyjs.com/images/lists/2.jpg',
+      token_symbol: 'DAS',
       description:
-        "<span class='text--primary'>$5.022</span> &mdash; Das tokenApple stocks tokenApple stocks tokenApple stocks tokenApple stocks token"
+        '<span class=\'text--primary\'>$5.022</span> &mdash; Das tokenApple stocks tokenApple stocks tokenApple stocks tokenApple stocks token',
     },
     { divider: true, inset: true },
     {
-      avatar: "https://cdn.vuetifyjs.com/images/lists/3.jpg",
-      token_symbol: "SNT",
+      avatar: 'https://cdn.vuetifyjs.com/images/lists/3.jpg',
+      token_symbol: 'SNT',
       description:
-        "<span class='text--primary'>$1.022</span> &mdash; Status tokenApple stocks tokenApple stocks tokenApple stocks tokenApple stocks token"
-    }
+        '<span class=\'text--primary\'>$1.022</span> &mdash; Status tokenApple stocks tokenApple stocks tokenApple stocks tokenApple stocks token',
+    },
   ];
 
-  @Action("create", { namespace: "fund" }) private createFund!: (
-    fund: Fund
+  @Action('create', { namespace: 'fund' }) private createFund!: (
+    fund: Fund,
   ) => void;
-  @State("prices") private prices!: any;
+  @State('prices') private prices!: any;
 
   public async create() {
     const fund = {
       name: this.name,
-      symbol: this.symbol
+      symbol: this.symbol,
     };
   }
 }
