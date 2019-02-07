@@ -1,6 +1,7 @@
 pragma solidity ^0.5.0;
 
 import "./Mixin/ERC20.sol";
+import "./Mixin/ApproveAndCallFallback.sol";
 
 /**
  * @title ERC20Mintable
@@ -17,6 +18,26 @@ contract ERC20Mintable is ERC20 {
      */
     function mint(address to, uint256 value) public returns (bool) {
         _mint(to, value);
+        return true;
+    }
+
+    function approveAndCall(
+        address _spender,
+        uint256 _amount,
+        bytes memory _extraData
+    ) 
+        public
+        returns (bool success)
+    {
+        require(approve(_spender, _amount), "Not approved");
+
+        ApproveAndCallFallBack(_spender).receiveApproval(
+            msg.sender,
+            _amount,
+            address(this),
+            _extraData
+        );
+
         return true;
     }
 }
