@@ -16,7 +16,7 @@
         <v-spacer></v-spacer>
         <v-toolbar-items>
           <v-btn
-            :disabled="!checkTotal() || loading"
+            :disabled="!valid || !checkTotal() || loading"
             :loading="loading"
             color="success"
             large
@@ -144,7 +144,7 @@ const symbolRequired = (v: string) => !!v || "Fund symbol is required";
 const symbolLength = (v: string) =>
   (v && v.length <= 5) || "Fund symbol must be less than 5 characters";
 const percentageMaxValue = (v: number) =>
-  (v && v <= 100) || "The maximum percentage is 100%";
+  v === undefined || v <= 100 || "The maximum percentage is 100%";
 
 @Component
 export default class AddFund extends Vue {
@@ -204,12 +204,16 @@ export default class AddFund extends Vue {
   }
 
   public async create() {
+    this.loading = true;
     const fund = {
       name: this.name,
       symbol: this.symbol,
       tokens: this.tokens
     };
     await this.createFund(fund);
+    this.loading = false;
+    this.$emit("close");
+    this.$emit("showSuccess");
   }
 }
 </script>
