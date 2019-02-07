@@ -16,10 +16,10 @@ contract Controller {
 
     address[] public funds;
 
-    function create(string memory _name, string memory _symbol, address[] memory tokens, uint256[] memory percentages) public {
-        Fund fund = new Fund(_name, _symbol, tokens, percentages);
+    function create(string memory _name, string memory _symbol, address[] memory _tokens, uint256[] memory _percentages) public {
+        Fund fund = new Fund(_name, _symbol, _tokens, _percentages);
         funds.push(address(fund));
-        emit FundCreated(address(fund), _name, _symbol, fund._totalSupply(), address(fund.democracy()), tokens, percentages);
+        emit FundCreated(address(fund), _name, _symbol, fund._totalSupply(), address(fund.democracy()), _tokens, _percentages);
     }
 
     function getAddresses() public view returns(address[] memory) {

@@ -26,6 +26,7 @@ export const actions: ActionTree<FundState, RootState> = {
     }
     const receipt = await waitForTransactionReceipt(rootState.provider, transaction.hash);
     const txEvents = extractTransactionEvents(receipt, rootState.contracts.Controller[0]);
+
     if (!txEvents.FundCreated) {
       return;
     }
