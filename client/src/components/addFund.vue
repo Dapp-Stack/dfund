@@ -100,17 +100,15 @@ import Vue from "vue";
 import { Action, State } from "vuex-class";
 import { Component, Watch, Prop } from "vue-property-decorator";
 import { Fund } from "@dfund/lib";
-import moment from "moment";
 
-const tomorrow = () => moment(new Date()).add(1, "days");
-
-const nameRequired = (v: string) => !!v || "Fund is required";
+const nameRequired = (v: string) => !!v || "Fund name is required";
 const nameLength = (v: string) =>
   (v && v.length <= 50) || "Fund name must be less than 50 characters";
-const symbolRequired = (v: string) => !!v || "Title is required";
+const symbolRequired = (v: string) => !!v || "Fund symbol is required";
 const symbolLength = (v: string) =>
   (v && v.length <= 5) || "Fund symbol must be less than 5 characters";
 
+@Component
 export default class AddFund extends Vue {
   public valid: boolean = false;
   public name: string = "";
@@ -125,19 +123,7 @@ export default class AddFund extends Vue {
   ) => void;
   @State("ethUsdPrice") private ethUsdPrice!: number;
 
-  public beforeDestroy() {
-    // this.editor.destroy();
-  }
-
   public async create() {
-    this.loading = true;
-    const fund: Fund = {
-      name: this.name
-    };
-    await this.createFund(fund);
-    this.loading = false;
-    this.$emit("close");
-    this.$emit("showSuccess");
   }
 }
 </script>
