@@ -10,12 +10,12 @@
             </h3>
           </v-card-title>
 
-          <v-layout row wrap>
-            <v-flex xs=6 v-for="(value, key) in wallet.balances" :key="key">
+          <v-layout column>
+            <v-flex class="mb-2" v-for="(value, key) in wallet.balances" :key="key">
               <v-list-tile>
                 <v-list-tile-content>
-                  <v-list-tile-title class="text-xs-center">{{value}}</v-list-tile-title>
-                  <v-list-tile-sub-title class="text-xs-center">{{key}}</v-list-tile-sub-title>
+                  <v-list-tile-title class="text-xs-center">{{value}} {{key}}</v-list-tile-title>
+                  <v-list-tile-sub-title class="text-xs-center">${{prices[key] * value}}</v-list-tile-sub-title>
                 </v-list-tile-content>
               </v-list-tile>
             </v-flex>
@@ -24,15 +24,41 @@
           <v-divider class="mt-3"/>
           <v-card-actions>
             <v-flex xs6>
-              <v-text-field :hint="getUSDPrice()"
+              <v-text-field :hint="getUSDPriceDas()"
                             persistentHint
                             type="number"
-                            v-model="tokenToBuy"
-                            label="Number of Token to Buy"
+                            v-model="dasTokenToBuy"
+                            label="Number of DAS Token to Buy"
                             outline></v-text-field>
             </v-flex>
             <v-flex xs6 class="pb-5">
-              <v-btn @click="buy" color="success">Buy</v-btn>
+              <v-btn @click="buyDas" color="success">Buy</v-btn>
+            </v-flex>
+          </v-card-actions>
+          <v-card-actions>
+            <v-flex xs6>
+              <v-text-field :hint="getUSDPriceSnt()"
+                            persistentHint
+                            type="number"
+                            v-model="sntTokenToBuy"
+                            label="Number of SNT Token to Buy"
+                            outline></v-text-field>
+            </v-flex>
+            <v-flex xs6 class="pb-5">
+              <v-btn @click="buySnt" color="success">Buy</v-btn>
+            </v-flex>
+          </v-card-actions>
+          <v-card-actions>
+            <v-flex xs6>
+              <v-text-field :hint="getUSDPriceAapl()"
+                            persistentHint
+                            type="number"
+                            v-model="aaplTokenToBuy"
+                            label="Number of AAPL Token to Buy"
+                            outline></v-text-field>
+            </v-flex>
+            <v-flex xs6 class="pb-5">
+              <v-btn @click="buyAapl" color="success">Buy</v-btn>
             </v-flex>
           </v-card-actions>
         </v-card>
@@ -72,27 +98,47 @@ import { Balances } from '../types';
 export default class Wallet extends Vue {
   public mnemonic = '';
   public privateKey = '';
-  public tokenToBuy = 0;
+  public dasTokenToBuy = 0;
+  public sntTokenToBuy = 0;
+  public aaplTokenToBuy = 0;
 
   @Action('generateRemote', { namespace: 'wallet' }) private generateRemote!: (
     payload: { privateKey?: string; mnemonic?: string },
   ) => void;
-  @Action('buyPetitionToken', { namespace: 'wallet' }) private buyToken!: (
+  @Action('buyToken', { namespace: 'wallet' }) private buyToken!: (
     payload: { name: string, value: number },
   ) => void;
   @State('remote', { namespace: 'wallet' }) private wallet!: { address: string, balances: Balances };
-  @State('ethUsdPrice') private ethUsdPrice!: number;
+  @State('prices') private prices!: any;
 
   public async unlockWithPrivateKey() {
     await this.generateRemote({ privateKey: this.privateKey });
   }
 
-  public async buy() {
-    await this.buyToken({name: 'Das', value: this.tokenToBuy});
+  public async buyAapl() {
+    await this.buyToken({name: 'Aa[;', value: this.sntTokenToBuy});
   }
 
-  public getUSDPrice() {
-    const value = (this.tokenToBuy * this.ethUsdPrice);
+  public async buyDas() {
+    await this.buyToken({name: 'Das', value: this.sntTokenToBuy});
+  }
+
+  public async buySnt() {
+    await this.buyToken({name: 'Snt', value: this.sntTokenToBuy});
+  }
+
+  public getUSDPriceSnt() {
+    const value = (this.sntTokenToBuy * this.prices.SNT);
+    return`$${value}`;
+  }
+
+  public getUSDPriceDas() {
+    const value = (this.dasTokenToBuy * this.prices.DAS);
+    return`$${value}`;
+  }
+
+  public getUSDPriceAapl() {
+    const value = (this.aaplTokenToBuy * this.prices.AAPL);
     return`$${value}`;
   }
 }

@@ -34,7 +34,12 @@ const defaultState: RootState = {
   network: NULL_NETWORK,
   contracts: {},
   ready: false,
-  ethUsdPrice: 0,
+  prices: {
+    ETH: 0,
+    SNT: 0,
+    DAS: 0,
+    AAPL: 0,
+  },
   provider,
   identity: identityDefaultState,
   ens: ensDefaultState,
@@ -48,15 +53,21 @@ const mutations: MutationTree<RootState> = {
     state.contracts = payload.contracts;
     state.ready = true;
   },
-  updateEthUsdPrice(state, payload) {
-    state.ethUsdPrice = payload;
+  updatePrices(state, payload) {
+    state.prices = payload;
   },
 };
 
 const actions: ActionTree<RootState, RootState> = {
   async fetchPrice({ commit }) {
-    const price = await cc.price('ETH', ['USD']);
-    commit('updateEthUsdPrice', price.USD);
+    const eth = await cc.price('ETH', ['USD']);
+    const snt = await cc.price('SNT', ['USD']);
+    const response = await axios({
+      url: 'https://api.iextrading.com/1.0/tops/last?symbols=AAPL',
+      method: 'GET',
+    });
+    const aapl = response.data[0].price;
+    commit('updatePrices', { ETH: eth.USD, DAS: eth.USD, SNT: snt.USD, AAPL: aapl});
   },
   initPriceRoutine({ dispatch }) {
     setInterval(() => {

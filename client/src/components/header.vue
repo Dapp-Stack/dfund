@@ -55,11 +55,11 @@
           <v-divider></v-divider>
           
           <v-layout column>
-            <v-flex class="mb-2" v-for="(balance, key) in balances" :key="key">
+            <v-flex class="mb-2" v-for="(value, key) in balances" :key="key">
               <v-list-tile>
                 <v-list-tile-content>
-                  <v-list-tile-title class="text-xs-center">{{balance.value}} {{key}}</v-list-tile-title>
-                  <v-list-tile-sub-title class="text-xs-center">${{balance.usd * balance.value}}</v-list-tile-sub-title>
+                  <v-list-tile-title class="text-xs-center">{{value}} {{key}}</v-list-tile-title>
+                  <v-list-tile-sub-title class="text-xs-center">${{prices[key] * value}}</v-list-tile-sub-title>
                 </v-list-tile-content>
               </v-list-tile>
             </v-flex>
@@ -71,7 +71,7 @@
             <v-spacer></v-spacer>
             <v-btn color="success" flat to="/wallet">
               <v-icon class="mr-2">fa-money</v-icon>
-              Buy DAS Token
+              Buy Token
             </v-btn>
             <v-btn color="error" flat @click="logout">
               <v-icon class="mr-2">fa-sign-out</v-icon>
@@ -109,6 +109,8 @@ export default class Header extends Vue {
   @State('balances', { namespace: 'identity' }) private balances!: Balances;
 
   @Action('destroy', { namespace: 'wallet' }) private destroyWallet!: () => void;
+
+  @State('prices') private prices!: object;
 
   public async logout() {
     await this.destroyIdentity();

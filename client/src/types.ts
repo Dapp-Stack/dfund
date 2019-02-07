@@ -2,10 +2,7 @@ import { ethers } from 'ethers';
 import { Contracts, Fund } from '@dfund/lib';
 
 export interface Balances {
-  [currency: string]: {
-    value: string;
-    usd: number;
-  };
+  [currency: string]: string;
 }
 
 export interface FundState {
@@ -40,7 +37,12 @@ export interface RootState {
   contracts: Contracts;
   provider: ethers.providers.JsonRpcProvider;
   ready: boolean;
-  ethUsdPrice: number;
+  prices: {
+    ETH: number;
+    SNT: number;
+    DAS: number;
+    AAPL: number;
+  };
   ens: EnsState;
   identity: IdentityState;
   wallet: WalletState;
