@@ -7,6 +7,7 @@ import { apiUrl } from '../../config';
 import { RootState, FundState } from '../../types';
 import { buildFund, buildCreateInput, buildMintInput } from '../../services/fundService';
 import fundJson from '../../../contracts/Fund/Fund.sol/Fund.json';
+import identityJson from '../../../contracts/Identity/Identity.sol/Identity.json';
 
 export const defaultState: FundState = {
   list: [],
@@ -25,8 +26,9 @@ export const actions: ActionTree<FundState, RootState> = {
       return;
     }
     const receipt = await waitForTransactionReceipt(rootState.provider, transaction.hash);
+    // const identity = new ethers.Contract(rootState.identity.address, identityJson.abi, rootState.provider)
+    // const idEvents = extractTransactionEvents(receipt, identity);
     const txEvents = extractTransactionEvents(receipt, rootState.contracts.Controller[0]);
-
     if (!txEvents.FundCreated) {
       return;
     }

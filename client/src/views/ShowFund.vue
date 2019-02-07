@@ -1,7 +1,7 @@
 <template>
   <v-container grid-list-xl>
     <v-snackbar v-model="snackbar" bottom multi-line>
-      Fund Signed
+      Fund Transfered and Minted
       <v-btn color="pink" flat @click="snackbar = false">
         Close
       </v-btn>
@@ -22,18 +22,43 @@
       <v-flex xs12>
         <v-card class="mt-5">
           <v-card-title>
-            <v-icon large left>fa-header</v-icon>
-            <span class="title font-weight-light">{{fund.title}}</span>
+            <v-icon large left>fa-money</v-icon>
+            <span class="title font-weight-light">{{fund.name}}</span>
             <v-spacer></v-spacer>
-            <p class="title font-weight-light">{{fund.signers.length}} signer(s)</p>
+            <p class="title font-weight-light">
+              <v-icon>fa-sort-alpha-asc</v-icon>
+              {{fund.symbol}}
+            </p>
+          <v-card-text>
+            <v-list two-line>
+              <template v-for="(percentage, address) in fund.tokens">
+                <v-list-tile-content :key="address">
+                  <v-list-tile-title>{{getTokenName(address)}} - {{percentage}}%</v-list-tile-title>
+                  <v-list-tile-sub-title>{{address}}</v-list-tile-sub-title>
+                </v-list-tile-content>
+              </template>
+            </v-list>
+          </v-card-text>
           </v-card-title>
-          <v-card-text v-html="fund.description"></v-card-text>
           <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn v-if="!isSigner()" @click="sign" color="success" :disabled="loading" :loading="loading">
-              <v-icon class="mr-2">fa-pencil</v-icon>
-              <span>Sign (0.00014 PPT / ${{0.00014 * ethUsdPrice}})</span>
-            </v-btn>
+            <v-flex>
+              <v-select
+                v-model="token"
+                :items="getSelectTokens()"
+                label="Select Token"
+                outline
+              ></v-select>
+            </v-flex>
+            <v-flex>
+              <v-text-field persistentHint
+                            type="number"
+                            v-model="value"
+                            label="Number of Token to Transfer"
+                            outline></v-text-field>
+            </v-flex>
+            <v-flex class="pb-5">
+              <v-btn @click="mint" color="success">Transfer And Mint</v-btn>
+            </v-flex>
           </v-card-actions>
         </v-card>
       </v-flex>
@@ -52,12 +77,35 @@ export default class ShowFund extends Vue {
   public fund: Fund | null = null;
   public snackbar = false;
   public loading = false;
+  public token: string = '';
+  public value: number = 0;
 
   @Action('list', { namespace: 'fund' }) private fetch!: () => void;
-  @Action('sign', { namespace: 'fund' }) private signFund!: (fund: Fund) => void;
+  @Action('mint', { namespace: 'fund' }) private mint!: (payload: {fund: Fund, token: address, value: number}) => void;
   @State('list', { namespace: 'fund' }) private funds!: Fund[];
   @State('address', { namespace: 'identity' }) private address!: string;
-  @State('ethUsdPrice') private ethUsdPrice!: number;
+  @State('contracts') private contracts!: any;
+  @State('prices') private prices!: object;
+
+  public getTokenName(address) {
+    if (this.contracts.SntToken[0].address === address){
+      return "SNT"
+    }
+
+    if (this.contracts.AaplToken[0].address === address){
+      return "AAPL"
+    }
+
+    if (this.contracts.DasToken[0].address === address){
+      return "DAS"
+    }
+  }
+
+  public getSelectTokens(){
+    return Object.keys(this.fund.tokens).map((address: string) => {
+      return  { value: address, text: this.getTokenName(address) };
+    });
+  }
 
   public async mounted() {
     if (this.funds.length === 0) {
@@ -66,18 +114,14 @@ export default class ShowFund extends Vue {
     this.fund = this.funds.find((p) => p.address === this.$route.params.address) || null;
   }
 
-  public async sign() {
+  public async transferAndMint() {
     if (!this.fund) {
       return;
     }
     this.loading = true;
-    await this.signFund(this.fund);
+    await this.mint({fund: this.fund, token: this.token, value: this.value});
     this.snackbar = true;
     this.loading = false;
-  }
-
-  public isSigner() {
-    return this.fund && this.fund.signers.includes(this.address);
   }
 }
 </script>

@@ -19,8 +19,8 @@ contract Controller {
     function create(string memory _name, string memory _symbol, address[] memory _tokens, uint256[] memory _percentages) public {
         Fund fund = new Fund(_name, _symbol, _tokens, _percentages);
         funds.push(address(fund));
-        fund.initDemocracy();
-        new Democracy(address(fund), 1);
+        // fund.initDemocracy();
+        // new Democracy(address(fund), 1);
         // fund.transferOwnership(address(fund.democracy()));
         emit FundCreated(address(fund), _name, _symbol, fund._totalSupply(), address(fund.democracy()), _tokens, _percentages);
     }
