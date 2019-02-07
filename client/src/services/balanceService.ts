@@ -6,12 +6,12 @@ export const updateBalances = async (commit: Commit, rootState: RootState, addre
   const wei = await getWeiBalance(rootState, address);
   commit('updateBalance', {name: 'ETH', value: utils.formatEther(wei)});
 
-  const ppt = await getPPTBalance(rootState, address);
-  commit('updateBalance', {name: 'PPT', value: utils.formatEther(ppt)});
+  const ppt = await getDASBalance(rootState, address);
+  commit('updateBalance', {name: 'DAS', value: utils.formatEther(ppt)});
 };
 
-export const getPPTBalance = async (rootState: RootState, address: string) => {
-  const token = rootState.contracts.ERC20Mintable[0];
+export const getDASBalance = async (rootState: RootState, address: string) => {
+  const token = rootState.contracts.DasToken[0];
   return await token.balanceOf(address);
 };
 

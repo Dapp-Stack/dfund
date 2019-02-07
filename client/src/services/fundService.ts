@@ -50,7 +50,7 @@ const buildDefaultMessage = async (rootState: RootState) => {
   return {
     from: rootState.identity.address,
     value: new BigNumber(0),
-    gasToken: rootState.contracts.ERC20Mintable[0].address,
+    gasToken: rootState.contracts.DasToken[0].address,
     operationType: '0',
     gasLimit: new BigNumber(100000),
     gasPrice: new BigNumber(2000000000),
