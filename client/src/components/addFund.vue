@@ -22,8 +22,13 @@
             large
             @click="create"
           >
-            <v-icon class="mr-2">fa-plus</v-icon>
-            Create (0.0015 PPT / ${{0.0015 * prices.ETH}})
+            <v-icon class="mr-2">fa-plus</v-icon>Create Your Fund Price
+            <v-chip color="gray">
+              <v-avatar color="white">
+                <v-icon color="teal">fa-dollar</v-icon>
+              </v-avatar>
+              {{blandedPrice()}}
+            </v-chip>
           </v-btn>
         </v-toolbar-items>
       </v-toolbar>
@@ -201,6 +206,26 @@ export default class AddFund extends Vue {
 
   public checkTotal() {
     return this.total === 100;
+  }
+
+  public blandedPrice() {
+    let blended = 0;
+    if (this.checkTotal()) {
+      for (var address in this.tokens) {
+        if (this.contracts.SntToken[0].address === address) {
+          blended += (this.prices["SNT"] * +this.tokens[address]) / 100;
+        }
+
+        if (this.contracts.AaplToken[0].address === address) {
+          blended += (this.prices["AAPL"] * +this.tokens[address]) / 100;
+        }
+
+        if (this.contracts.DasToken[0].address === address) {
+          blended += (this.prices["DAS"] * +this.tokens[address]) / 100;
+        }
+      }
+    }
+    return blended;
   }
 
   public async create() {
