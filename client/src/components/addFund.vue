@@ -144,7 +144,7 @@ const symbolRequired = (v: string) => !!v || "Fund symbol is required";
 const symbolLength = (v: string) =>
   (v && v.length <= 5) || "Fund symbol must be less than 5 characters";
 const percentageMaxValue = (v: number) =>
-  v === undefined || v <= 100 || "The maximum percentage is 100%";
+  !v || v <= 100 || "The maximum percentage is 100%";
 
 @Component
 export default class AddFund extends Vue {
