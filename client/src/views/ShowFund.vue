@@ -74,7 +74,7 @@
           </v-card-actions>
           <v-flex>
             <v-btn @click="transferAndMint" large color="success">
-              Transfer And Mint (0.0004 DAS / ${{0.0004 * prices.DAS}})
+              Transfer And Mint (0.001 DAS / ${{0.001 * prices.DAS}})
             </v-btn>
           </v-flex>
         </v-card>
