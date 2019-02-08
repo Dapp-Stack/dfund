@@ -2,24 +2,29 @@
   <v-container grid-list-xl>
     <v-layout align-center justify-center row>
       <v-flex>
-        <v-data-table
-          :headers="headers"
-          :items="funds"
-          class="elevation-1 mt-5"
-        >
+        <v-data-table :headers="headers" :items="funds" class="elevation-1 mt-5">
           <template slot="no-data">
-            <v-alert :value="true" color="warning" icon="fa fa-warning" class="text-xs-center my-5">
-              There is no fund yet, why not adding one.
-            </v-alert>
+            <v-alert
+              :value="true"
+              color="warning"
+              icon="fa fa-warning"
+              class="text-xs-center my-5"
+            >There is no fund yet, why not adding one.</v-alert>
           </template>
           <template slot="items" slot-scope="props">
             <router-link tag="tr" class="tr-link" :to="`/funds/${props.item.address}`">
-              <td>{{ props.item.address }}</td>
-              <td>{{ props.item.name }}</td>
               <td>{{ props.item.symbol }}</td>
-              <td>{{ getPrice(props.item.address, "fund") }}</td>
-              <td>{{ props.item.balance }}</td>
-              <td>{{ props.item.supply }}</td>
+              <td>{{ props.item.name }}</td>
+              <td>
+                <v-chip>
+                  <v-avatar class="teal">
+                    <v-icon color="white">fa-dollar</v-icon>
+                  </v-avatar>
+                  {{getPrice(props.item.address, "fund").toFixed(5)}}
+                </v-chip>
+              </td>
+              <td>{{ props.item.balance }} units</td>
+              <td>{{ props.item.supply }} units</td>
               <td>{{ Object.keys(props.item.tokens).map((address) => `${getTokenName(address)} - ${props.item.tokens[address]}%`).join(" / ") }}</td>
             </router-link>
           </template>
@@ -30,39 +35,44 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import { Action, State } from 'vuex-class';
-import { Component, Watch } from 'vue-property-decorator';
+import Vue from "vue";
+import { Action, State } from "vuex-class";
+import { Component, Watch } from "vue-property-decorator";
 
 @Component
 export default class Funds extends Vue {
   public headers = [
-    { text: 'Address', value: 'address' },
-    { text: 'Name', value: 'name' },
-    { text: 'Symbol', value: 'symbol' },
-    { text: 'Price', value: 'price' },
-    { text: 'My Balance', value: 'balance' },
-    { text: 'Supply', value: 'supply' },
-    { text: 'Tokens', value: 'tokens' },
+    { text: "Symbol", value: "symbol" },
+    { text: "Name", value: "name" },
+    { text: "Current Price", value: "price" },
+    { text: "My Balance", value: "balance" },
+    { text: "Total Supply", value: "supply" },
+    { text: "Strategy", value: "strategy" }
   ];
 
-  @State('contracts') private contracts!: object;
-  @State('prices') private prices!: object;
-  @State('list', { namespace: 'fund' }) private funds!: any[];
-  @Action('list', { namespace: 'fund' }) private fetch!: () => void;
+  @State("contracts") private contracts!: object;
+  @State("prices") private prices!: object;
+  @State("list", { namespace: "fund" }) private funds!: any[];
+  @Action("list", { namespace: "fund" }) private fetch!: () => void;
 
   public getTokenName(address) {
-    if (this.contracts.SntToken[0].address === address){
-      return "SNT"
+    if (this.contracts.SntToken[0].address === address) {
+      return "SNT";
     }
 
-    if (this.contracts.AaplToken[0].address === address){
-      return "AAPL"
+    if (this.contracts.AaplToken[0].address === address) {
+      return "AAPL";
     }
 
-    if (this.contracts.DasToken[0].address === address){
-      return "DAS"
+    if (this.contracts.DasToken[0].address === address) {
+      return "DAS";
     }
+    let fund = this.funds.find(fund => fund.address == address);
+    if (fund.symbol) return fund.symbol;
+  }
+
+  public getStrategy(symbol, percentage) {
+    return `<li>${symbol} - ${percentage}%</li>`;
   }
 
   public getPrice(address, type) {
