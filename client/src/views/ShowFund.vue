@@ -71,10 +71,12 @@
                             label="Number of Token to Transfer"
                             outline></v-text-field>
             </v-flex>
-            <v-flex class="pb-5">
-              <v-btn @click="transferAndMint" color="success">Transfer And Mint</v-btn>
-            </v-flex>
           </v-card-actions>
+          <v-flex>
+            <v-btn @click="transferAndMint" large color="success">
+              Transfer And Mint (0.0004 DAS / ${{0.0004 * prices.DAS}})
+            </v-btn>
+          </v-flex>
         </v-card>
       </v-flex>
     </v-layout>

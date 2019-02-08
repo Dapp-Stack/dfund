@@ -42,7 +42,7 @@ export const buildMintInput = async (rootState: RootState, fund: Fund, token: st
 
   const message: Message =  {
     ...await buildDefaultMessage(rootState),
-    gasLimit: new BigNumber(2200000),
+    gasLimit: new BigNumber(200000),
     to: contract.address,
     data: contract.interface.functions.approveAndCall.encode(params),
   };
