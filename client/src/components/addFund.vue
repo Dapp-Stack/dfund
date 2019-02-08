@@ -90,7 +90,7 @@
 
                         <v-divider v-else-if="item.divider" :key="index" :inset="item.inset"></v-divider>
 
-                        <v-list-tile v-else :key="item.token_symbol" avatar>
+                        <v-list-tile v-else :key="item.address" avatar>
                           <v-list-tile-avatar>
                             <img :src="item.avatar">
                           </v-list-tile-avatar>
