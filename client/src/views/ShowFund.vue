@@ -66,7 +66,7 @@
               @click="transferAndMint"
               large
               color="success"
-            >Buy (transaction fee: 0.001 DAS / ${{0.001 * +prices.DAS.toFixed(5)}})</v-btn>
+            >Buy (Your transaction fees are: 0.001 DAS / ${{0.001 * +prices.DAS.toFixed(5)}})</v-btn>
           </v-flex>
         </v-card>
       </v-flex>
