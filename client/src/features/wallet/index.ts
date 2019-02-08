@@ -1,4 +1,5 @@
 import { Module, ActionTree, MutationTree } from 'vuex';
+import Vue from 'vue';
 import { ethers } from 'ethers';
 import { waitForTransactionReceipt } from '@dfund/lib';
 
@@ -63,7 +64,7 @@ export const mutations: MutationTree<WalletState> = {
     state.remote = payload;
   },
   updateBalance(state, payload: { name: string, value: string, usd: number }) {
-    state.remote.balances[payload.name] = payload.value;
+    Vue.set(state.remote.balances, payload.name, payload.value);
   },
   clean(state) {
     state.local = {

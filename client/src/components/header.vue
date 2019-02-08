@@ -91,7 +91,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import { Component, Prop } from 'vue-property-decorator';
-import { Action, State } from 'vuex-class';
+import { Action, State, Getter } from 'vuex-class';
 import AddFund from './addFund.vue';
 import Blockies from './blockies.vue';
 import { Balances } from '../types';
@@ -107,7 +107,7 @@ export default class Header extends Vue {
   @State('address', { namespace: 'identity' }) private address!: string;
   @State('ensName', { namespace: 'identity' }) private ensName!: string;
   @State('balances', { namespace: 'identity' }) private balances!: Balances;
-
+  
   @Action('destroy', { namespace: 'wallet' }) private destroyWallet!: () => void;
 
   @State('prices') private prices!: object;

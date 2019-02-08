@@ -1,4 +1,5 @@
 import axios from 'axios';
+import Vue from 'vue';
 import { Module, ActionTree, MutationTree } from 'vuex';
 import { waitForTransactionReceipt, extractTransactionEvents, Fund } from '@dfund/lib';
 import { ethers } from 'ethers';
@@ -53,14 +54,11 @@ export const actions: ActionTree<FundState, RootState> = {
     const receipt = await waitForTransactionReceipt(rootState.provider, transaction.hash);
     const contract = new ethers.Contract(payload.fund.address, fundJson.abi, rootState.provider);
     const txEvents = extractTransactionEvents(receipt, contract);
-    console.dir(txEvents);
-    if (!txEvents.Minted) {
-      return;
-    }
     const contractData = await contract.get();
     const newFund = await buildFund(contractData, rootState);
     commit('minted', newFund);
     dispatch('identity/fetchBalances', {}, { root: true });
+    console.dir(txEvents);
   },
   async list({ commit, rootState }) {
     const controller = rootState.contracts.Controller[0];
@@ -88,7 +86,7 @@ export const mutations: MutationTree<FundState> = {
     if (index === -1) {
       return;
     }
-    state.list[index] = payload;
+    Vue.set(state.list, index, payload);
   },
 };
 

@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { waitForTransactionReceipt } from '@dfund/lib';
+import Vue from 'vue';
 import { Module, ActionTree, MutationTree } from 'vuex';
 import { ethers } from 'ethers';
 
@@ -7,6 +8,7 @@ import { apiUrl } from '../../config';
 import { RootState, IdentityState } from '../../types';
 import { usernameToEns } from '../../services/ensService';
 import { updateBalances } from '../../services/balanceService';
+import VuexPersistence from 'vuex-persist';
 
 export const defaultState: IdentityState = {
   address: '',
@@ -40,7 +42,7 @@ export const actions: ActionTree<IdentityState, RootState> = {
       return;
     }
     commit('setAddress', { address: receipt.contractAddress });
-    dispatch('fetchBalances');
+    await dispatch('fetchBalances');
   },
   async fetchBalances({ commit, state, rootState }) {
     if (!state.address) {
@@ -63,7 +65,7 @@ export const mutations: MutationTree<IdentityState> = {
     state.address = payload.address;
   },
   updateBalance(state, payload: { name: string, value: string }) {
-    state.balances[payload.name] = payload.value;
+    Vue.set(state.balances, payload.name, payload.value);
   },
 };
 
@@ -74,6 +76,11 @@ const identity: Module<IdentityState, RootState> = {
   state: defaultState,
   actions,
   mutations,
+  getters: {
+    balances: (state) => {
+      return state.balances
+    }
+  }
 };
 
 export default identity;

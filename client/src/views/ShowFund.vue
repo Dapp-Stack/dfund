@@ -137,6 +137,7 @@ export default class ShowFund extends Vue {
     }
     this.loading = true;
     await this.mint({fund: this.fund, token: this.token, value: this.value});
+    this.fund = this.funds.find((p) => p.address === this.$route.params.address) || null;
     this.snackbar = true;
     this.loading = false;
   }
