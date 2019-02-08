@@ -22,13 +22,8 @@
             large
             @click="create"
           >
-            <v-icon class="mr-2">fa-plus</v-icon>Create Your Fund Price
-            <v-chip color="gray">
-              <v-avatar color="white">
-                <v-icon color="teal">fa-dollar</v-icon>
-              </v-avatar>
-              {{blandedPrice()}}
-            </v-chip>
+            <v-icon class="mr-2">fa-plus</v-icon>
+            Create Your Fund Price (0.0044 DAS / ${{0.0044 * prices.DAS}})
           </v-btn>
         </v-toolbar-items>
       </v-toolbar>
@@ -79,6 +74,7 @@
               <v-container grid-list-xl>
                 <v-layout wrap>
                   <v-flex xs12 sm8 offset-sm2>
+                    <h4>The price of your new fund will be ${{blendedPrice()}}</h4>
                     <v-list>
                       <template v-for="(item, index) in getItems()">
                         <v-subheader v-if="item.header" :key="item.header">{{ item.header }}</v-subheader>
@@ -208,7 +204,7 @@ export default class AddFund extends Vue {
     return this.total === 100;
   }
 
-  public blandedPrice() {
+  public blendedPrice() {
     let blended = 0;
     if (this.checkTotal()) {
       for (var address in this.tokens) {
