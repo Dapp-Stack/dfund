@@ -15,6 +15,15 @@
         <v-toolbar-title>Add Fund</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-toolbar-items>
+          <v-btn color="transparent">
+            <v-icon class="mr-2"></v-icon>Your Fund Price
+            <v-chip color="gray">
+              <v-avatar color="white">
+                <v-icon color="teal">fa-dollar</v-icon>
+              </v-avatar>
+              {{blendedPrice(tokens)}}
+            </v-chip>
+          </v-btn>
           <v-btn
             :disabled="!valid || !checkTotal() || loading"
             :loading="loading"
@@ -23,7 +32,7 @@
             @click="create"
           >
             <v-icon class="mr-2">fa-plus</v-icon>
-            Create Your Fund Price (0.0044 DAS / ${{0.0044 * prices.DAS}})
+            Gas Fee: (0.0044 DAS / ${{0.0044 * prices.DAS}})
           </v-btn>
         </v-toolbar-items>
       </v-toolbar>
@@ -96,7 +105,7 @@
                               <v-avatar class="teal">
                                 <v-icon color="white">fa-dollar</v-icon>
                               </v-avatar>
-                              {{prices[item.token_symbol]}}
+                              {{getPrice(item.address, item.type)}}
                             </v-chip>
                           </v-list-tile-action>
 
@@ -165,12 +174,14 @@ export default class AddFund extends Vue {
   ) => void;
   @State("prices") private prices!: any;
   @State("contracts") private contracts!: any;
+  @State("list", { namespace: "fund" }) private funds!: any[];
 
   public getItems() {
-    return [
+    let items = [
       { header: "Available Tokens" },
       {
         address: this.contracts.AaplToken[0].address,
+        type: "token",
         avatar:
           "https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg",
         token_symbol: "AAPL",
@@ -179,6 +190,7 @@ export default class AddFund extends Vue {
       { divider: true, inset: true },
       {
         address: this.contracts.DasToken[0].address,
+        type: "token",
         avatar: "https://svgshare.com/i/B4f.svg",
         token_symbol: "DAS",
         description: "Dapp-Stack token"
@@ -186,12 +198,30 @@ export default class AddFund extends Vue {
       { divider: true, inset: true },
       {
         address: this.contracts.SntToken[0].address,
+        type: "token",
         avatar:
           "https://cdn.freebiesupply.com/logos/large/2x/status-2-logo-png-transparent.png",
         token_symbol: "SNT",
         description: "Status token"
       }
     ];
+
+    for (let fund in this.funds) {
+      const { address, symbol, name } = this.funds[fund];
+      items.push(
+        { divider: true, inset: true },
+        {
+          address: address,
+          type: "fund",
+          avatar:
+            "https://cdn1.iconfinder.com/data/icons/personal-business-finance-set-3/256/Finance-10-512.png",
+          token_symbol: symbol,
+          description: name
+        }
+      );
+    }
+
+    return items;
   }
 
   public updateToken(value, item) {
@@ -204,20 +234,35 @@ export default class AddFund extends Vue {
     return this.total === 100;
   }
 
-  public blendedPrice() {
+  public getPrice(address, type) {
+    let tokenBlend = {};
+
+    if (type == "token") {
+      tokenBlend[address] = 100;
+      return this.blendedPrice(tokenBlend, true);
+    }
+    if (type == "fund") {
+      let fund = this.funds.find(fund => fund.address == address);
+      tokenBlend = fund.tokens;
+      return this.blendedPrice(tokenBlend, true);
+    }
+  }
+
+  public blendedPrice(blend, isToken = false) {
     let blended = 0;
-    if (this.checkTotal()) {
-      for (var address in this.tokens) {
+    if (isToken || this.checkTotal()) {
+      for (var address in blend) {
+        const percentage = blend[address];
         if (this.contracts.SntToken[0].address === address) {
-          blended += (this.prices["SNT"] * +this.tokens[address]) / 100;
+          blended += (this.prices["SNT"] * +percentage) / 100;
         }
 
         if (this.contracts.AaplToken[0].address === address) {
-          blended += (this.prices["AAPL"] * +this.tokens[address]) / 100;
+          blended += (this.prices["AAPL"] * +percentage) / 100;
         }
 
         if (this.contracts.DasToken[0].address === address) {
-          blended += (this.prices["DAS"] * +this.tokens[address]) / 100;
+          blended += (this.prices["DAS"] * +percentage) / 100;
         }
       }
     }
