@@ -17,6 +17,7 @@
               <td>{{ props.item.address }}</td>
               <td>{{ props.item.name }}</td>
               <td>{{ props.item.symbol }}</td>
+              <td>{{ props.item.balance }}</td>
               <td>{{ props.item.supply }}</td>
               <td>{{ Object.keys(props.item.tokens).map((address) => `${address} - ${props.item.tokens[address]}%`).join(" / ") }}</td>
             </router-link>
@@ -38,6 +39,7 @@ export default class Funds extends Vue {
     { text: 'Address', value: 'address' },
     { text: 'Name', value: 'name' },
     { text: 'Symbol', value: 'symbol' },
+    { text: 'My Balance', value: 'balance' },
     { text: 'Supply', value: 'supply' },
     { text: 'Tokens', value: 'Tokens' },
   ];
