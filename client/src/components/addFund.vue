@@ -32,7 +32,7 @@
             @click="create"
           >
             <v-icon class="mr-2">fa-plus</v-icon>
-            Gas Fee: (0.0044 DAS / ${{0.0044 * prices.DAS}})
+            Gas Fee: (0.0044 DAS / ${{0.0044 * +prices.DAS.toFixed(5)}})
           </v-btn>
         </v-toolbar-items>
       </v-toolbar>
