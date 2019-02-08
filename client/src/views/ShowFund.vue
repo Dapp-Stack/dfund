@@ -29,7 +29,12 @@
               <v-icon>fa-sort-alpha-asc</v-icon>
               {{fund.symbol}}
             </p>
+          </v-card-title>
           <v-card-text>
+            <h3>You own {{fund.balance}} {{fund.symbol}}</h3>
+          </v-card-text>
+          <v-card-text>
+            <h4>Fund Units</h4>
             <v-list two-line>
               <template v-for="(percentage, address) in fund.tokens">
                 <v-list-tile-content :key="address">
@@ -39,7 +44,17 @@
               </template>
             </v-list>
           </v-card-text>
-          </v-card-title>
+          <v-card-text>
+            <h4>Waiting to be mint</h4>
+            <v-list two-line>
+              <template v-for="(value, address) in fund.pendingTokens">
+                <v-list-tile-content :key="address">
+                  <v-list-tile-title>{{getTokenName(address)}} - {{value}}</v-list-tile-title>
+                  <v-list-tile-sub-title>{{address}}</v-list-tile-sub-title>
+                </v-list-tile-content>
+              </template>
+            </v-list>
+          </v-card-text>
           <v-card-actions>
             <v-flex>
               <v-select
