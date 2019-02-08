@@ -57,7 +57,9 @@ export const actions: ActionTree<FundState, RootState> = {
     if (!txEvents.Minted) {
       return;
     }
-    commit('minted', {address: payload.fund.address, event: txEvents.Minted[0]});
+    const contractData = await contract.get();
+    const newFund = await buildFund(contractData, rootState);
+    commit('minted', newFund);
     dispatch('identity/fetchBalances', {}, { root: true });
   },
   async list({ commit, rootState }) {
@@ -81,7 +83,12 @@ export const mutations: MutationTree<FundState> = {
   addFund(state, payload: Fund) {
     state.list.push(payload);
   },
-  minted(state, payload: { address: string, event: any}) {
+  minted(state, payload: Fund) {
+    const index = state.list.findIndex((p) => p.address === payload.address);
+    if (index === -1) {
+      return;
+    }
+    state.list[index] = payload;
   },
 };
 
