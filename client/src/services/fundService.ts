@@ -21,15 +21,23 @@ export const buildFund = (data: any[]): Fund => {
 };
 
 export const buildMintInput = async (rootState: RootState, fund: Fund, token: string, value: number) => {
-  const params = [rootState.identity.address, value, ethers.utils.formatBytes32String("")];
+  const params = [fund.address, value, ethers.utils.formatBytes32String("")];
   const contract = Object.values(rootState.contracts).map((c) => c[0]).find(c => c.address === token);
   if (!contract) {
     return;
   }
+  const t = await contract.balanceOf(fund.address);
+  const f = new ethers.Contract(fund.address, fundJson.abi, rootState.provider);
+  const i = await f.balanceOf(rootState.identity.address);
+  const g = await f._totalSupply();
+  const h = await f.pendingTokens(rootState.identity.address, contract.address);
+  console.dir(i.toString())
+  console.dir(g.toString())
+  console.dir(h.toString())
   const message: Message =  {
     ...await buildDefaultMessage(rootState),
     gasLimit: new BigNumber(2200000),
-    to: fund.address,
+    to: contract.address,
     data: contract.interface.functions.approveAndCall.encode(params),
   };
 
