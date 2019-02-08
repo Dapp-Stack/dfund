@@ -16,6 +16,10 @@ export interface Fund {
   tokens: {
     [address: string]: number;
   };
+  pendingTokens: {
+    [address: string]: number;
+  };
+  balance: string;
   supply?: number;
   democracy?: string;
 }

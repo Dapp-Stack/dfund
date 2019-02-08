@@ -32,7 +32,7 @@ export const actions: ActionTree<FundState, RootState> = {
     if (!txEvents.FundCreated) {
       return;
     }
-    const result = await buildFund(Object.values(txEvents.FundCreated));
+    const result = await buildFund(Object.values(txEvents.FundCreated), rootState);
     commit('addFund', result);
     dispatch('identity/fetchBalances', {}, { root: true });
   },
@@ -67,7 +67,7 @@ export const actions: ActionTree<FundState, RootState> = {
     const promises = addresses.map(async (address) => {
       const contract = new ethers.Contract(address, fundJson.abi, rootState.provider);
       const data = await contract.get();
-      return await buildFund(data);
+      return await buildFund(data, rootState);
     });
     const funds: Fund[] = await Promise.all(promises);
     commit('updateFunds', funds);

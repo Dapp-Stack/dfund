@@ -6,17 +6,30 @@ import { BigNumber } from 'ethers/utils';
 import identityJson from '../../contracts/Identity/Identity.sol/Identity.json';
 import fundJson from '../../contracts/Fund/Fund.sol/Fund.json';
 
-export const buildFund = (data: any[]): Fund => {
+export const buildFund = async (data: any[], rootState: RootState): Promise<Fund> => {
+  const contract = new ethers.Contract(data[0], fundJson.abi, rootState.provider);
+  const balance = await contract.balanceOf(rootState.identity.address);
+  const tokens = data[5].reduce((acc: any, address: string, index: number) => {
+    acc[address] = data[6][index].toNumber();
+    return acc;
+  }, {});
+  const pendingTokensPromises = data[5].map(async (address: string) => {
+    return await contract.pendingTokens(rootState.identity.address, address);
+  });
+  const pendingTokensArray = await Promise.all(pendingTokensPromises);
+  const pendingTokens = pendingTokensArray.reduce((acc: any, pending: any, index: number) => {
+    acc[data[5][index]] = pending.toString();
+    return acc;
+  }, {});
   return {
     address: data[0] as string,
     name: data[1] as string,
     symbol: data[2] as string,
     supply: data[3].toNumber() as number,
     democracy: data[4] as string,
-    tokens: data[5].reduce((acc: any, address: string, index: number) => {
-      acc[address] = data[6][index].toNumber();
-      return acc;
-    }, {}),
+    tokens,
+    pendingTokens,
+    balance: balance.toString(),
   };
 };
 
@@ -26,14 +39,7 @@ export const buildMintInput = async (rootState: RootState, fund: Fund, token: st
   if (!contract) {
     return;
   }
-  const t = await contract.balanceOf(fund.address);
-  const f = new ethers.Contract(fund.address, fundJson.abi, rootState.provider);
-  const i = await f.balanceOf(rootState.identity.address);
-  const g = await f._totalSupply();
-  const h = await f.pendingTokens(rootState.identity.address, contract.address);
-  console.dir(i.toString())
-  console.dir(g.toString())
-  console.dir(h.toString())
+
   const message: Message =  {
     ...await buildDefaultMessage(rootState),
     gasLimit: new BigNumber(2200000),
